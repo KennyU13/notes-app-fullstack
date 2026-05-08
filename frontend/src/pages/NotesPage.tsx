@@ -1,6 +1,6 @@
 import { IconLayoutGrid, IconList } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { EmptyState } from '../components/EmptyState';
 import { Loader } from '../components/Loader';
@@ -10,14 +10,16 @@ import { useUiStore } from '../stores/uiStore';
 
 export function NotesPage({ favoris = false, archivees = false }: { favoris?: boolean; archivees?: boolean }) {
   const navigate = useNavigate();
+  const [paramsRecherche] = useSearchParams();
   const { notes, charger, chargement, definirFiltres, favori, archiver, supprimer } = useNotesStore();
   const { vue, definirVue } = useUiStore();
   const [aSupprimer, setASupprimer] = useState<string | null>(null);
+  const categorieId = paramsRecherche.get('categorieId') ?? undefined;
 
   useEffect(() => {
-    definirFiltres({ favoris: favoris || undefined, archivees: archivees || undefined });
+    definirFiltres({ categorieId, favoris: favoris || undefined, archivees: archivees || undefined });
     void charger();
-  }, [favoris, archivees, definirFiltres, charger]);
+  }, [categorieId, favoris, archivees, definirFiltres, charger]);
 
   return (
     <div className="space-y-5">

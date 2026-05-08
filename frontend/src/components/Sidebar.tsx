@@ -38,7 +38,7 @@ export function Sidebar() {
   const filtrerParCategorie = (categorieId?: string) => {
     definirFiltres({ categorieId, favoris: undefined, archivees: undefined });
     void chargerNotes();
-    navigate('/notes');
+    navigate(categorieId ? `/notes?categorieId=${categorieId}` : '/notes');
     if (ouverte) basculer();
   };
 
