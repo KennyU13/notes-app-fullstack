@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ModifierProfilDto } from './dto/utilisateur.dto';
 
@@ -36,7 +36,7 @@ export class UtilisateursService {
     if (email) {
       const utilisateurExistant = await this.prisma.utilisateur.findUnique({ where: { email } });
       if (utilisateurExistant && utilisateurExistant.id !== utilisateurId) {
-        throw new BadRequestException('Cet email est deja utilise');
+        throw new ConflictException('Cet email est deja utilise');
       }
     }
 

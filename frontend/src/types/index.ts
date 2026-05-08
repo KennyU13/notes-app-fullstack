@@ -31,4 +31,4 @@ export type Note = {
   createdAt: string;
   updatedAt: string;
 };
-export type ReponseApi<T> = { succes: boolean; donnees: T; message?: string };
+export type ReponseApi<T> = { succes: boolean; donnees: T; message?: string; erreurs?: string[]; codeErreur?: string; statut?: number; chemin?: string; horodatage?: string };

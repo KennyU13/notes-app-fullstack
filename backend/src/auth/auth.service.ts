@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -38,7 +38,7 @@ export class AuthService {
   async inscription(dto: InscriptionDto) {
     const email = dto.email.trim().toLowerCase();
     const existe = await this.prisma.utilisateur.findUnique({ where: { email } });
-    if (existe) throw new BadRequestException('Cet email est deja utilise');
+    if (existe) throw new ConflictException('Cet email est deja utilise');
 
     const utilisateur = await this.prisma.utilisateur.create({
       data: { ...dto, email, motDePasse: await bcrypt.hash(dto.motDePasse, 12) }
@@ -103,7 +103,7 @@ export class AuthService {
   private verifierRateLimit(email: string, ip?: string) {
     const tentative = this.tentativesConnexion.get(this.cleTentative(email, ip));
     if (tentative && tentative.total >= 5 && tentative.resetAt > Date.now()) {
-      throw new UnauthorizedException('Trop de tentatives de connexion. Reessayez dans une minute');
+      throw new HttpException('Trop de tentatives de connexion. Reessayez dans une minute', HttpStatus.TOO_MANY_REQUESTS);
     }
   }
 

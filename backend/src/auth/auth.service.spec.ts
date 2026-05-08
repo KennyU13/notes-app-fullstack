@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { ConflictException, HttpException, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -53,5 +53,27 @@ describe('AuthService', () => {
     jwt.verifyAsync.mockRejectedValue(new Error('expire'));
 
     await expect(service.rafraichirToken('token-invalide')).rejects.toBeInstanceOf(UnauthorizedException);
+  });
+
+  it('rejette une inscription avec un email deja utilise', async () => {
+    prisma.utilisateur.findUnique.mockResolvedValue({ id: 'u1', email: 'test@example.com' });
+
+    await expect(service.inscription({
+      email: 'test@example.com',
+      motDePasse: 'password123',
+      prenom: 'Test',
+      nom: 'User'
+    })).rejects.toBeInstanceOf(ConflictException);
+  });
+
+  it('bloque temporairement les connexions apres trop de tentatives', async () => {
+    prisma.utilisateur.findUnique.mockResolvedValue(null);
+    prisma.auditLog.create.mockResolvedValue({});
+
+    for (let tentative = 0; tentative < 5; tentative += 1) {
+      await expect(service.connexion({ email: 'test@example.com', motDePasse: 'incorrect' }, { ip: '127.0.0.1' })).rejects.toBeInstanceOf(UnauthorizedException);
+    }
+
+    await expect(service.connexion({ email: 'test@example.com', motDePasse: 'incorrect' }, { ip: '127.0.0.1' })).rejects.toBeInstanceOf(HttpException);
   });
 });

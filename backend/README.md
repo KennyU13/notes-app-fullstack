@@ -53,3 +53,18 @@ Toutes les reponses suivent le format :
 ```json
 { "succes": true, "donnees": {}, "message": "Optionnel" }
 ```
+
+En cas d'erreur, le filtre global retourne une reponse formalisee :
+
+```json
+{
+  "succes": false,
+  "donnees": null,
+  "message": "Message en francais",
+  "erreurs": ["Detail optionnel"],
+  "codeErreur": "REQUETE_INVALIDE",
+  "statut": 400,
+  "chemin": "/auth/connexion",
+  "horodatage": "2026-05-08T00:00:00.000Z"
+}
+```
