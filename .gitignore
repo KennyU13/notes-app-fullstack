@@ -9,6 +9,10 @@ backend/dist/
 frontend/dist/
 frontend/test-results/
 frontend/playwright-report/
+*.tsbuildinfo
+backend/prisma/seed.js
+backend/prisma/seed.d.ts
+backend/prisma/seed.js.map
 
 # Environnement
 .env

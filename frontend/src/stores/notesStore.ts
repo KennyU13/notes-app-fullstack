@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { notesService, NotePayload } from '../services/notes';
 import { Note } from '../types';
 
-type Filtres = { recherche?: string; categorieId?: string; favoris?: boolean; archivees?: boolean };
+type Filtres = { recherche?: string; categorieId?: string; tagId?: string; favoris?: boolean; archivees?: boolean; corbeille?: boolean };
 type EtatNotes = {
   notes: Note[];
   noteActive: Note | null;
@@ -14,8 +14,11 @@ type EtatNotes = {
   creer: (payload: NotePayload) => Promise<Note>;
   modifier: (id: string, payload: Partial<NotePayload>) => Promise<Note>;
   supprimer: (id: string) => Promise<void>;
+  restaurer: (id: string) => Promise<void>;
+  supprimerDefinitivement: (id: string) => Promise<void>;
   favori: (id: string) => Promise<void>;
   archiver: (id: string) => Promise<void>;
+  epingler: (id: string) => Promise<void>;
 };
 
 const remplacer = (notes: Note[], note: Note) => notes.map((item) => (item.id === note.id ? note : item));
@@ -53,7 +56,19 @@ export const useNotesStore = create<EtatNotes>((set, get) => ({
     await notesService.supprimer(id);
     set((s) => ({ notes: s.notes.filter((note) => note.id !== id) }));
     void get().charger(true);
-    toast.success('Note supprimee');
+    toast.success('Note deplacee dans la corbeille');
+  },
+  restaurer: async (id) => {
+    const note = await notesService.restaurer(id);
+    set((s) => ({ notes: s.notes.filter((item) => item.id !== id), noteActive: note }));
+    void get().charger(true);
+    toast.success('Note restauree');
+  },
+  supprimerDefinitivement: async (id) => {
+    await notesService.supprimerDefinitivement(id);
+    set((s) => ({ notes: s.notes.filter((note) => note.id !== id) }));
+    void get().charger(true);
+    toast.success('Note supprimee definitivement');
   },
   favori: async (id) => {
     const note = await notesService.favori(id);
@@ -62,6 +77,11 @@ export const useNotesStore = create<EtatNotes>((set, get) => ({
   },
   archiver: async (id) => {
     const note = await notesService.archiver(id);
+    set((s) => ({ notes: remplacer(s.notes, note) }));
+    void get().charger(true);
+  },
+  epingler: async (id) => {
+    const note = await notesService.epingler(id);
     set((s) => ({ notes: remplacer(s.notes, note) }));
     void get().charger(true);
   }

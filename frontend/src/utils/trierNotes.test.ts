@@ -9,6 +9,9 @@ const creerNote = (surcharge: Partial<Note>): Note => ({
   couleur: surcharge.couleur ?? '#8b5cf6',
   estFavorite: surcharge.estFavorite ?? false,
   estArchivee: surcharge.estArchivee ?? false,
+  estEpinglee: surcharge.estEpinglee ?? false,
+  estSupprimee: surcharge.estSupprimee ?? false,
+  supprimeeAt: surcharge.supprimeeAt ?? null,
   categorieId: surcharge.categorieId,
   categorie: surcharge.categorie ?? null,
   tags: surcharge.tags ?? [],
@@ -37,5 +40,14 @@ describe('trierNotes', () => {
     const notes = [creerNote({ id: 'normal' }), creerNote({ id: 'favori', estFavorite: true })];
 
     expect(trierNotes(notes, 'favoris').map((note) => note.id)).toEqual(['favori', 'normal']);
+  });
+
+  it('garde les notes epinglees en haut quel que soit le tri', () => {
+    const notes = [
+      creerNote({ id: 'z', titre: 'Zebre' }),
+      creerNote({ id: 'm', titre: 'Memo', estEpinglee: true })
+    ];
+
+    expect(trierNotes(notes, 'titre').map((note) => note.id)).toEqual(['m', 'z']);
   });
 });

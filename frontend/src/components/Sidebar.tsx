@@ -1,4 +1,4 @@
-import { IconArchive, IconCategory, IconHome, IconNote, IconPlus, IconStar, IconUser } from '@tabler/icons-react';
+import { IconArchive, IconCategory, IconHome, IconNote, IconPlus, IconStar, IconTrash, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { notesService } from '../services/notes';
@@ -11,6 +11,7 @@ const liens = [
   { to: '/notes', label: 'Notes', Icone: IconNote },
   { to: '/notes/favorites', label: 'Favoris', Icone: IconStar },
   { to: '/notes/archivees', label: 'Archivees', Icone: IconArchive },
+  { to: '/notes/corbeille', label: 'Corbeille', Icone: IconTrash },
   { to: '/categories', label: 'Categories', Icone: IconCategory },
   { to: '/profil', label: 'Profil', Icone: IconUser }
 ];

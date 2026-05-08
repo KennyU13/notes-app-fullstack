@@ -7,6 +7,9 @@ const nomCategorie = (note: Note) => note.categorie?.nom ?? 'Sans categorie';
 
 export function trierNotes(notes: Note[], tri: TriNotes) {
   return [...notes].sort((a, b) => {
+    const epinglees = Number(b.estEpinglee) - Number(a.estEpinglee);
+    if (epinglees !== 0) return epinglees;
+
     switch (tri) {
       case 'titre':
         return a.titre.localeCompare(b.titre, 'fr', { sensitivity: 'base' }) || dateMiseAJour(b) - dateMiseAJour(a);

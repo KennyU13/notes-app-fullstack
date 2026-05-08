@@ -65,6 +65,11 @@ export class RechercherNotesDto {
   archivees?: boolean;
 
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  corbeille?: boolean;
+
+  @IsOptional()
   @IsString()
   recherche?: string;
 }

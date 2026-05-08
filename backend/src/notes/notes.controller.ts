@@ -37,6 +37,16 @@ export class NotesController {
     return this.notes.supprimer(utilisateur.id, id);
   }
 
+  @Patch(':id/restaurer')
+  restaurer(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('id') id: string) {
+    return this.notes.restaurer(utilisateur.id, id);
+  }
+
+  @Delete(':id/definitif')
+  supprimerDefinitivement(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('id') id: string) {
+    return this.notes.supprimerDefinitivement(utilisateur.id, id);
+  }
+
   @Patch(':id/favori')
   favori(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('id') id: string) {
     return this.notes.basculerFavori(utilisateur.id, id);
@@ -45,5 +55,10 @@ export class NotesController {
   @Patch(':id/archiver')
   archiver(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('id') id: string) {
     return this.notes.basculerArchive(utilisateur.id, id);
+  }
+
+  @Patch(':id/epingler')
+  epingler(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('id') id: string) {
+    return this.notes.basculerEpingle(utilisateur.id, id);
   }
 }

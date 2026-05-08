@@ -27,6 +27,9 @@ model Note {
   contenu       String
   estFavorite   Boolean     @default(false)
   estArchivee   Boolean     @default(false)
+  estEpinglee   Boolean     @default(false)
+  estSupprimee  Boolean     @default(false)
+  supprimeeAt   DateTime?
   couleur       String      @default("#8b5cf6")
   utilisateurId String
   categorieId   String?
@@ -38,6 +41,8 @@ model Note {
 
   @@index([utilisateurId])
   @@index([categorieId])
+  @@index([estSupprimee])
+  @@index([estEpinglee])
 }
 
 model Categorie {

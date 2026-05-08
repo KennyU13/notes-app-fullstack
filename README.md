@@ -30,7 +30,9 @@ Fonctionnalites principales :
 
 - Gestion des notes, favoris, archives, categories et tags.
 - Page detail categorie avec nombre de notes et liste associee.
-- Tri des notes par date, titre, favoris, couleur ou categorie.
+- Recherche avancee combinant mot-cle, categorie, tag, favori et archive.
+- Tri des notes par date, titre, favoris, couleur ou categorie, avec notes epinglees en haut.
+- Corbeille avec restauration avant suppression definitive.
 
 ## Tests
 

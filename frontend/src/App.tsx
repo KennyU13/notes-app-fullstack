@@ -38,6 +38,7 @@ export default function App() {
               <Route path="notes/nouvelle" element={<Page><NoteFormPage /></Page>} />
               <Route path="notes/favorites" element={<Page><NotesPage favoris /></Page>} />
               <Route path="notes/archivees" element={<Page><NotesPage archivees /></Page>} />
+              <Route path="notes/corbeille" element={<Page><NotesPage corbeille /></Page>} />
               <Route path="notes/:id" element={<Page><NoteFormPage /></Page>} />
               <Route path="categories" element={<Page><CategoriesPage /></Page>} />
               <Route path="categories/:id" element={<Page><CategorieDetailPage /></Page>} />

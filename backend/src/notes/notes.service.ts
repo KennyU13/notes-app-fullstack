@@ -17,6 +17,7 @@ export class NotesService {
     const limite = filtre.limite ?? 12;
     const where: Prisma.NoteWhereInput = {
       utilisateurId,
+      estSupprimee: filtre.corbeille === true,
       ...(filtre.categorieId ? { categorieId: filtre.categorieId } : {}),
       ...(filtre.favoris !== undefined ? { estFavorite: filtre.favoris } : {}),
       ...(filtre.archivees !== undefined ? { estArchivee: filtre.archivees } : {}),
@@ -26,7 +27,7 @@ export class NotesService {
         : {})
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.note.findMany({ where, include: inclusionNote, orderBy: { updatedAt: 'desc' }, skip: (page - 1) * limite, take: limite }),
+      this.prisma.note.findMany({ where, include: inclusionNote, orderBy: [{ estEpinglee: 'desc' }, { updatedAt: 'desc' }], skip: (page - 1) * limite, take: limite }),
       this.prisma.note.count({ where })
     ]);
     return { items, pagination: { page, limite, total, pages: Math.ceil(total / limite) } };
@@ -48,8 +49,8 @@ export class NotesService {
     });
   }
 
-  async obtenir(utilisateurId: string, id: string) {
-    const note = await this.prisma.note.findFirst({ where: { id, utilisateurId }, include: inclusionNote });
+  async obtenir(utilisateurId: string, id: string, inclureCorbeille = false) {
+    const note = await this.prisma.note.findFirst({ where: { id, utilisateurId, ...(inclureCorbeille ? {} : { estSupprimee: false }) }, include: inclusionNote });
     if (!note) throw new NotFoundException('Note introuvable');
     return note;
   }
@@ -73,6 +74,17 @@ export class NotesService {
 
   async supprimer(utilisateurId: string, id: string) {
     await this.obtenir(utilisateurId, id);
+    await this.prisma.note.update({ where: { id }, data: { estSupprimee: true, supprimeeAt: new Date(), estEpinglee: false } });
+    return { id };
+  }
+
+  async restaurer(utilisateurId: string, id: string) {
+    await this.obtenir(utilisateurId, id, true);
+    return this.prisma.note.update({ where: { id }, data: { estSupprimee: false, supprimeeAt: null }, include: inclusionNote });
+  }
+
+  async supprimerDefinitivement(utilisateurId: string, id: string) {
+    await this.obtenir(utilisateurId, id, true);
     await this.prisma.note.delete({ where: { id } });
     return { id };
   }
@@ -85,6 +97,11 @@ export class NotesService {
   async basculerArchive(utilisateurId: string, id: string) {
     const note = await this.obtenir(utilisateurId, id);
     return this.prisma.note.update({ where: { id }, data: { estArchivee: !note.estArchivee }, include: inclusionNote });
+  }
+
+  async basculerEpingle(utilisateurId: string, id: string) {
+    const note = await this.obtenir(utilisateurId, id);
+    return this.prisma.note.update({ where: { id }, data: { estEpinglee: !note.estEpinglee }, include: inclusionNote });
   }
 
   private async verifierCategorie(utilisateurId: string, categorieId?: string | null) {

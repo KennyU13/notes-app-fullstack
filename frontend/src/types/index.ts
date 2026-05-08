@@ -8,6 +8,9 @@ export type Note = {
   couleur: string;
   estFavorite: boolean;
   estArchivee: boolean;
+  estEpinglee: boolean;
+  estSupprimee: boolean;
+  supprimeeAt?: string | null;
   categorieId?: string;
   categorie?: Categorie | null;
   tags: { tag: Tag }[];

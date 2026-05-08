@@ -9,6 +9,9 @@ export const notesService = {
   creer: (payload: NotePayload) => api.post('/notes', payload).then((r) => r.data.donnees as Note),
   modifier: (id: string, payload: Partial<NotePayload>) => api.patch(`/notes/${id}`, payload).then((r) => r.data.donnees as Note),
   supprimer: (id: string) => api.delete(`/notes/${id}`).then((r) => r.data.donnees),
+  restaurer: (id: string) => api.patch(`/notes/${id}/restaurer`).then((r) => r.data.donnees as Note),
+  supprimerDefinitivement: (id: string) => api.delete(`/notes/${id}/definitif`).then((r) => r.data.donnees),
   favori: (id: string) => api.patch(`/notes/${id}/favori`).then((r) => r.data.donnees as Note),
-  archiver: (id: string) => api.patch(`/notes/${id}/archiver`).then((r) => r.data.donnees as Note)
+  archiver: (id: string) => api.patch(`/notes/${id}/archiver`).then((r) => r.data.donnees as Note),
+  epingler: (id: string) => api.patch(`/notes/${id}/epingler`).then((r) => r.data.donnees as Note)
 };

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('parcours complet : inscription, categorie, note, edition, detail categorie et actualisation', async ({ page }) => {
+test('parcours complet : inscription, categorie, note, edition, detail categorie, epingle et corbeille', async ({ page }) => {
   const suffixe = Date.now();
   const email = `e2e-${suffixe}@notes.local`;
   const motDePasse = 'password123';
@@ -59,5 +59,24 @@ test('parcours complet : inscription, categorie, note, edition, detail categorie
 
   await page.getByRole('link', { name: 'Notes' }).click();
   await expect(page).toHaveURL(/\/notes$/);
+  await expect(page.getByText(titreModifie)).toBeVisible();
+
+  const reponseEpingle = page.waitForResponse((reponse) => reponse.url().includes('/epingler') && reponse.request().method() === 'PATCH');
+  await page.getByRole('button', { name: 'Epingler' }).click();
+  await expect((await reponseEpingle).ok()).toBeTruthy();
+  await expect(page.getByRole('article').filter({ hasText: titreModifie }).getByTitle('Epingler')).toHaveClass(/text-cyan-200/);
+
+  await page.getByRole('button', { name: 'Supprimer' }).click();
+  await expect(page.getByRole('heading', { name: 'Deplacer cette note dans la corbeille ?' })).toBeVisible();
+  await page.getByRole('button', { name: 'Confirmer' }).click();
+  await expect(page.getByText(titreModifie)).toBeHidden();
+
+  await page.getByRole('link', { name: 'Corbeille' }).click();
+  await expect(page.getByRole('heading', { name: 'Corbeille' })).toBeVisible();
+  await expect(page.getByText(titreModifie)).toBeVisible();
+  await page.getByRole('button', { name: 'Restaurer' }).click();
+  await expect(page.getByText(titreModifie)).toBeHidden();
+
+  await page.getByRole('link', { name: 'Notes' }).click();
   await expect(page.getByText(titreModifie)).toBeVisible();
 });

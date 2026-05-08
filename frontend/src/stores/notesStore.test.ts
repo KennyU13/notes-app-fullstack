@@ -14,8 +14,11 @@ vi.mock('../services/notes', () => ({
     creer: vi.fn(),
     modifier: vi.fn(),
     supprimer: vi.fn(),
+    restaurer: vi.fn(),
+    supprimerDefinitivement: vi.fn(),
     favori: vi.fn(),
-    archiver: vi.fn()
+    archiver: vi.fn(),
+    epingler: vi.fn()
   }
 }));
 
@@ -26,6 +29,9 @@ const note = {
   couleur: '#06b6d4',
   estFavorite: false,
   estArchivee: false,
+  estEpinglee: false,
+  estSupprimee: false,
+  supprimeeAt: null,
   tags: [],
   createdAt: '2026-05-08T00:00:00.000Z',
   updatedAt: '2026-05-08T00:00:00.000Z'
