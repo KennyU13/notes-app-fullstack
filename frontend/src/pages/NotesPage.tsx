@@ -64,13 +64,13 @@ export function NotesPage({ favoris = false, archivees = false, corbeille = fals
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-        <h1 className="text-3xl font-bold">{titre}</h1>
-        <div className="flex flex-wrap items-center justify-end gap-3">
+        <h1 className="text-2xl font-bold sm:text-3xl">{titre}</h1>
+        <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-[minmax(180px,1fr)_auto] xl:w-auto xl:grid-cols-[minmax(180px,220px)_auto_auto]">
           <select
             aria-label="Trier les notes"
             value={tri}
             onChange={(event) => setTri(event.target.value as TriNotes)}
-            className="min-w-40 flex-1 rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-sm text-white outline-none focus:border-violet-300 sm:flex-none"
+            className="min-w-0 rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-sm text-white outline-none focus:border-violet-300"
           >
             <option value="date">Date recente</option>
             <option value="titre">Titre</option>
@@ -78,12 +78,12 @@ export function NotesPage({ favoris = false, archivees = false, corbeille = fals
             <option value="couleur">Couleur</option>
             <option value="categorie">Categorie</option>
           </select>
-          <div className="flex rounded-2xl bg-white/10 p-1">
-            <button title="Vue grille" onClick={() => definirVue('grille')} className={`rounded-xl p-2 ${vue === 'grille' ? 'bg-white/20' : ''}`}><IconLayoutGrid /></button>
-            <button title="Vue liste" onClick={() => definirVue('liste')} className={`rounded-xl p-2 ${vue === 'liste' ? 'bg-white/20' : ''}`}><IconList /></button>
+          <div className="grid grid-cols-2 rounded-2xl bg-white/10 p-1">
+            <button title="Vue grille" onClick={() => definirVue('grille')} className={`rounded-xl p-2 ${vue === 'grille' ? 'bg-white/20' : ''}`}><IconLayoutGrid className="mx-auto" /></button>
+            <button title="Vue liste" onClick={() => definirVue('liste')} className={`rounded-xl p-2 ${vue === 'liste' ? 'bg-white/20' : ''}`}><IconList className="mx-auto" /></button>
           </div>
           {!corbeille && (
-            <div className="flex rounded-2xl bg-white/10 p-1 text-sm">
+            <div className="grid grid-cols-3 rounded-2xl bg-white/10 p-1 text-sm sm:col-span-2 xl:col-span-1">
               <button onClick={() => void exporter('json')} className="rounded-xl px-3 py-2 hover:bg-white/10">JSON</button>
               <button onClick={() => void exporter('markdown')} className="rounded-xl px-3 py-2 hover:bg-white/10">MD</button>
               <button onClick={() => void exporter('pdf')} className="rounded-xl px-3 py-2 hover:bg-white/10">PDF</button>

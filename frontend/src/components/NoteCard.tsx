@@ -23,12 +23,12 @@ export function NoteCard({
   corbeille?: boolean;
 }) {
   return (
-    <article className="rounded-3xl bg-glass p-5 shadow-glass transition hover:-translate-y-1 hover:shadow-glow" style={{ borderColor: `${note.couleur}88` }}>
-      <button onClick={onOuvrir} className="block w-full text-left">
+    <article className="flex min-w-0 flex-col rounded-3xl bg-glass p-4 shadow-glass transition hover:-translate-y-1 hover:shadow-glow sm:p-5" style={{ borderColor: `${note.couleur}88` }}>
+      <button onClick={onOuvrir} className="block min-w-0 flex-1 text-left">
         <div className="mb-4 h-2 w-20 rounded-full" style={{ backgroundColor: note.couleur }} />
-        <div className="flex items-start gap-2">
+        <div className="flex min-w-0 items-start gap-2">
           {note.estEpinglee && <IconPinned size={18} className="mt-1 shrink-0 text-cyan-200" />}
-          <h3 className="line-clamp-2 text-xl font-semibold">{note.titre}</h3>
+          <h3 className="line-clamp-2 min-w-0 text-lg font-semibold sm:text-xl">{note.titre}</h3>
         </div>
         <p className="mt-3 line-clamp-4 min-h-24 text-sm leading-6 text-white/70">{note.contenu}</p>
       </button>
@@ -37,9 +37,9 @@ export function NoteCard({
         {note.tags?.slice(0, 3).map(({ tag }) => <TagChip key={tag.id} nom={tag.nom} />)}
         {note.piecesJointes?.length ? <span className="rounded-full border border-white/20 px-3 py-1 text-xs">{note.piecesJointes.length} piece(s)</span> : null}
       </div>
-      <div className="mt-5 flex items-center justify-between text-xs text-white/55">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-xs text-white/55">
         <span>{new Date(note.updatedAt).toLocaleDateString('fr-FR')}</span>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap justify-end gap-1 sm:gap-2">
           {corbeille ? (
             <>
               <button title="Restaurer" onClick={onRestaurer} className="rounded-xl p-2 hover:bg-white/10"><IconRestore size={18} /></button>

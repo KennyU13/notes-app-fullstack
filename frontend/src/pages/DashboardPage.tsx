@@ -5,26 +5,30 @@ import { notesService } from '../services/notes';
 import { statistiquesService, StatistiquesGlobales } from '../services/statistiques';
 import { useCategoriesStore } from '../stores/categoriesStore';
 import { useNotesStore } from '../stores/notesStore';
-import { useTagsStore } from '../stores/tagsStore';
 import { Note } from '../types';
 
 export function DashboardPage() {
-  const { notes, charger } = useNotesStore();
+  const { charger } = useNotesStore();
   const { categories, charger: chargerCategories } = useCategoriesStore();
-  const { tags, charger: chargerTags } = useTagsStore();
   const [stats, setStats] = useState<StatistiquesGlobales>({ notes: 0, favoris: 0, archivees: 0, corbeille: 0, categories: 0 });
   const [recentes, setRecentes] = useState<Note[]>([]);
+  const [notesTableau, setNotesTableau] = useState<Note[]>([]);
   const [compteursCategories, setCompteursCategories] = useState<Record<string, number>>({});
-  const notesEpinglees = useMemo(() => notes.filter((note) => note.estEpinglee).length, [notes]);
-  const piecesJointes = useMemo(() => notes.reduce((total, note) => total + (note.piecesJointes?.length ?? 0), 0), [notes]);
+  const notesEpinglees = useMemo(() => notesTableau.filter((note) => note.estEpinglee), [notesTableau]);
+  const tagsUtilises = useMemo(() => {
+    const uniques = new Map<string, string>();
+    notesTableau.forEach((note) => note.tags?.forEach(({ tag }) => uniques.set(tag.id, tag.nom)));
+    return Array.from(uniques, ([id, nom]) => ({ id, nom })).sort((a, b) => a.nom.localeCompare(b.nom));
+  }, [notesTableau]);
+  const piecesJointes = useMemo(() => notesTableau.reduce((total, note) => total + (note.piecesJointes?.length ?? 0), 0), [notesTableau]);
 
   useEffect(() => {
     void charger();
     void chargerCategories();
-    void chargerTags();
     void statistiquesService.globales().then(setStats);
     void notesService.lister({ page: 1, limite: 5 }).then((reponse) => setRecentes(reponse.items));
-  }, [charger, chargerCategories, chargerTags]);
+    void notesService.lister({ page: 1, limite: 100 }).then((reponse) => setNotesTableau(reponse.items));
+  }, [charger, chargerCategories]);
 
   useEffect(() => {
     void Promise.all(categories.map(async (categorie) => {
@@ -48,7 +52,7 @@ export function DashboardPage() {
         <StatsCard titre="Corbeille" valeur={stats.corbeille} Icone={IconTrash} description="Notes en attente de restauration" />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.2fr_.8fr]">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,.8fr)]">
         <section className="rounded-3xl bg-glass p-5 shadow-glass">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">Notes recentes</h2>
@@ -68,16 +72,35 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-          <div className="rounded-3xl bg-glass p-5 shadow-glass">
-            <IconPinned className="mb-4 text-cyan-200" />
+        <section className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-1">
+          <div className="min-w-0 rounded-3xl bg-glass p-5 shadow-glass">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <IconPinned className="shrink-0 text-cyan-200" />
+              <span className="rounded-full bg-white/10 px-3 py-1 text-xs">{notesEpinglees.length}</span>
+            </div>
             <p className="text-sm text-white/60">Notes epinglees</p>
-            <p className="mt-2 text-3xl font-bold">{notesEpinglees}</p>
+            <div className="mt-4 space-y-2">
+              {notesEpinglees.slice(0, 3).map((note) => (
+                <div key={note.id} className="flex min-w-0 items-center gap-2 rounded-2xl bg-white/10 px-3 py-2">
+                  <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: note.couleur }} />
+                  <span className="min-w-0 truncate text-sm">{note.titre}</span>
+                </div>
+              ))}
+              {notesEpinglees.length === 0 && <p className="rounded-2xl bg-white/10 px-3 py-2 text-sm text-white/55">Aucune note epinglee.</p>}
+            </div>
           </div>
-          <div className="rounded-3xl bg-glass p-5 shadow-glass">
-            <IconTag className="mb-4 text-cyan-200" />
+          <div className="min-w-0 rounded-3xl bg-glass p-5 shadow-glass">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <IconTag className="shrink-0 text-cyan-200" />
+              <span className="rounded-full bg-white/10 px-3 py-1 text-xs">{tagsUtilises.length}</span>
+            </div>
             <p className="text-sm text-white/60">Tags utilises</p>
-            <p className="mt-2 text-3xl font-bold">{tags.length}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {tagsUtilises.slice(0, 8).map((tag) => (
+                <span key={tag.id} className="max-w-full truncate rounded-full bg-white/10 px-3 py-1 text-xs text-white/75">#{tag.nom}</span>
+              ))}
+              {tagsUtilises.length === 0 && <p className="rounded-2xl bg-white/10 px-3 py-2 text-sm text-white/55">Aucun tag utilise.</p>}
+            </div>
           </div>
         </section>
       </div>
