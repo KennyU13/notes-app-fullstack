@@ -11,7 +11,7 @@ export function NoteEditor({
 }: {
   note?: Note | null;
   categories: Categorie[];
-  onEnregistrer: (payload: { titre: string; contenu: string; couleur: string; categorieId?: string; tags: string[] }) => Promise<void>;
+  onEnregistrer: (payload: { titre: string; contenu: string; couleur: string; categorieId?: string | null; tags: string[] }) => Promise<void>;
 }) {
   const [titre, setTitre] = useState(note?.titre ?? '');
   const [contenu, setContenu] = useState(note?.contenu ?? '');
@@ -36,7 +36,7 @@ export function NoteEditor({
   };
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); void onEnregistrer({ titre, contenu, couleur, categorieId: categorieId || undefined, tags }); }} className="rounded-3xl bg-glass p-5 shadow-glass">
+    <form onSubmit={(e) => { e.preventDefault(); void onEnregistrer({ titre, contenu, couleur, categorieId: categorieId || null, tags }); }} className="rounded-3xl bg-glass p-5 shadow-glass">
       <input value={titre} onChange={(e) => setTitre(e.target.value)} placeholder="Titre de la note" className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-2xl font-semibold placeholder:text-white/45" />
       <textarea value={contenu} onChange={(e) => setContenu(e.target.value)} placeholder="Contenu" rows={12} className="mt-4 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 leading-7 placeholder:text-white/45" />
       <select value={categorieId} onChange={(e) => setCategorieId(e.target.value)} className="mt-4 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white">

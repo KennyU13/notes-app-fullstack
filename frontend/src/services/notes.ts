@@ -1,7 +1,7 @@
 import { Note } from '../types';
 import { api } from './api';
 
-export type NotePayload = { titre: string; contenu: string; couleur?: string; categorieId?: string; tags?: string[] };
+export type NotePayload = { titre: string; contenu: string; couleur?: string; categorieId?: string | null; tags?: string[] };
 
 export const notesService = {
   lister: (params?: Record<string, unknown>) => api.get('/notes', { params }).then((r) => r.data.donnees),

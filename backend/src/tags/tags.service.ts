@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreerTagDto } from './dto/tag.dto';
 
@@ -13,8 +14,11 @@ export class TagsService {
   async creer(utilisateurId: string, dto: CreerTagDto) {
     try {
       return await this.prisma.tag.create({ data: { utilisateurId, nom: dto.nom.trim().toLowerCase() } });
-    } catch {
-      throw new BadRequestException('Ce tag existe deja');
+    } catch (erreur) {
+      if (erreur instanceof Prisma.PrismaClientKnownRequestError && erreur.code === 'P2002') {
+        throw new BadRequestException('Ce tag existe deja');
+      }
+      throw erreur;
     }
   }
 

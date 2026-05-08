@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreerCategorieDto, ModifierCategorieDto } from './dto/categorie.dto';
 
@@ -12,15 +13,25 @@ export class CategoriesService {
 
   async creer(utilisateurId: string, dto: CreerCategorieDto) {
     try {
-      return await this.prisma.categorie.create({ data: { utilisateurId, ...dto } });
-    } catch {
-      throw new BadRequestException('Une categorie avec ce nom existe deja');
+      return await this.prisma.categorie.create({ data: { utilisateurId, ...dto, nom: dto.nom.trim() } });
+    } catch (erreur) {
+      if (erreur instanceof Prisma.PrismaClientKnownRequestError && erreur.code === 'P2002') {
+        throw new BadRequestException('Une categorie avec ce nom existe deja');
+      }
+      throw erreur;
     }
   }
 
   async modifier(utilisateurId: string, id: string, dto: ModifierCategorieDto) {
     await this.verifierProprietaire(utilisateurId, id);
-    return this.prisma.categorie.update({ where: { id }, data: dto });
+    try {
+      return await this.prisma.categorie.update({ where: { id }, data: { ...dto, nom: dto.nom?.trim() } });
+    } catch (erreur) {
+      if (erreur instanceof Prisma.PrismaClientKnownRequestError && erreur.code === 'P2002') {
+        throw new BadRequestException('Une categorie avec ce nom existe deja');
+      }
+      throw erreur;
+    }
   }
 
   async supprimer(utilisateurId: string, id: string) {

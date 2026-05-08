@@ -26,17 +26,18 @@ export class AuthService {
   ) {}
 
   async inscription(dto: InscriptionDto) {
-    const existe = await this.prisma.utilisateur.findUnique({ where: { email: dto.email } });
+    const email = dto.email.trim().toLowerCase();
+    const existe = await this.prisma.utilisateur.findUnique({ where: { email } });
     if (existe) throw new BadRequestException('Cet email est deja utilise');
 
     const utilisateur = await this.prisma.utilisateur.create({
-      data: { ...dto, motDePasse: await bcrypt.hash(dto.motDePasse, 12) }
+      data: { ...dto, email, motDePasse: await bcrypt.hash(dto.motDePasse, 12) }
     });
     return this.creerSession(utilisateur);
   }
 
   async connexion(dto: ConnexionDto) {
-    const utilisateur = await this.prisma.utilisateur.findUnique({ where: { email: dto.email } });
+    const utilisateur = await this.prisma.utilisateur.findUnique({ where: { email: dto.email.trim().toLowerCase() } });
     if (!utilisateur || !(await bcrypt.compare(dto.motDePasse, utilisateur.motDePasse))) {
       throw new UnauthorizedException('Identifiants invalides');
     }
@@ -44,7 +45,15 @@ export class AuthService {
   }
 
   async rafraichirToken(refreshToken: string) {
-    const utilisateur = await this.prisma.utilisateur.findFirst({ where: { refreshToken } });
+    let payload: { sub: string; type?: string };
+    try {
+      payload = await this.jwt.verifyAsync(refreshToken, { secret: this.config.get<string>('JWT_SECRET') ?? 'secret-local' });
+    } catch {
+      throw new UnauthorizedException('Refresh token invalide ou expire');
+    }
+    if (payload.type !== 'refresh') throw new UnauthorizedException('Refresh token invalide');
+
+    const utilisateur = await this.prisma.utilisateur.findFirst({ where: { id: payload.sub, refreshToken } });
     if (!utilisateur) throw new UnauthorizedException('Refresh token invalide');
     return this.creerSession(utilisateur);
   }

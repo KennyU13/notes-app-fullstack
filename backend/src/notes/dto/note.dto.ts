@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsHexColor, IsInt, IsOptional, IsString, Min, MinLength } from 'class-validator';
+import { IsArray, IsBoolean, IsHexColor, IsInt, IsOptional, IsString, Max, Min, MinLength } from 'class-validator';
 
 export class CreerNoteDto {
   @ApiProperty()
@@ -10,6 +10,7 @@ export class CreerNoteDto {
 
   @ApiProperty()
   @IsString()
+  @MinLength(1, { message: 'Le contenu est obligatoire' })
   contenu: string;
 
   @ApiProperty({ required: false })
@@ -20,7 +21,7 @@ export class CreerNoteDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  categorieId?: string;
+  categorieId?: string | null;
 
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()
@@ -42,6 +43,7 @@ export class RechercherNotesDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
+  @Max(100)
   limite = 12;
 
   @IsOptional()

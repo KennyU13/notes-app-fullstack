@@ -40,7 +40,7 @@ export class NotesService {
         titre: dto.titre,
         contenu: dto.contenu,
         couleur: dto.couleur,
-        categorieId: dto.categorieId,
+        categorieId: dto.categorieId ?? null,
         utilisateurId,
         tags: { create: tags.map((tag) => ({ tagId: tag.id })) }
       },
@@ -64,7 +64,7 @@ export class NotesService {
         titre: dto.titre,
         contenu: dto.contenu,
         couleur: dto.couleur,
-        categorieId: dto.categorieId,
+        ...(dto.categorieId !== undefined ? { categorieId: dto.categorieId } : {}),
         ...(tags ? { tags: { deleteMany: {}, create: tags.map((tag) => ({ tagId: tag.id })) } } : {})
       },
       include: inclusionNote
@@ -87,7 +87,7 @@ export class NotesService {
     return this.prisma.note.update({ where: { id }, data: { estArchivee: !note.estArchivee }, include: inclusionNote });
   }
 
-  private async verifierCategorie(utilisateurId: string, categorieId?: string) {
+  private async verifierCategorie(utilisateurId: string, categorieId?: string | null) {
     if (!categorieId) return;
     const categorie = await this.prisma.categorie.findFirst({ where: { id: categorieId, utilisateurId } });
     if (!categorie) throw new BadRequestException('Categorie invalide');
