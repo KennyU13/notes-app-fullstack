@@ -8,7 +8,7 @@ export function Layout() {
       <Sidebar />
       <main className="min-w-0 flex-1 pb-20">
         <Header />
-        <div className="mx-auto w-full max-w-7xl p-4">
+        <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-4 lg:px-6">
           <Outlet />
         </div>
       </main>

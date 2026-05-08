@@ -2,19 +2,20 @@ import { IconArchive, IconCategory, IconHome, IconNote, IconPlus, IconStar, Icon
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { notesService } from '../services/notes';
+import { statistiquesService, StatistiquesGlobales } from '../services/statistiques';
 import { useCategoriesStore } from '../stores/categoriesStore';
 import { useNotesStore } from '../stores/notesStore';
 import { useUiStore } from '../stores/uiStore';
 
 const liens = [
-  { to: '/', label: 'Tableau', Icone: IconHome },
-  { to: '/notes', label: 'Notes', Icone: IconNote },
-  { to: '/notes/favorites', label: 'Favoris', Icone: IconStar },
-  { to: '/notes/archivees', label: 'Archivees', Icone: IconArchive },
-  { to: '/notes/corbeille', label: 'Corbeille', Icone: IconTrash },
-  { to: '/categories', label: 'Categories', Icone: IconCategory },
-  { to: '/profil', label: 'Profil', Icone: IconUser }
-];
+  { to: '/', label: 'Tableau', Icone: IconHome, compteur: null },
+  { to: '/notes', label: 'Notes', Icone: IconNote, compteur: 'notes' },
+  { to: '/notes/favorites', label: 'Favoris', Icone: IconStar, compteur: 'favoris' },
+  { to: '/notes/archivees', label: 'Archivees', Icone: IconArchive, compteur: 'archivees' },
+  { to: '/notes/corbeille', label: 'Corbeille', Icone: IconTrash, compteur: 'corbeille' },
+  { to: '/categories', label: 'Categories', Icone: IconCategory, compteur: 'categories' },
+  { to: '/profil', label: 'Profil', Icone: IconUser, compteur: null }
+] as const;
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export function Sidebar() {
   const ouverte = useUiStore((s) => s.sidebarOuverte);
   const basculer = useUiStore((s) => s.basculerSidebar);
   const [totalNotes, setTotalNotes] = useState(0);
+  const [stats, setStats] = useState<StatistiquesGlobales>({ notes: 0, favoris: 0, archivees: 0, corbeille: 0, categories: 0 });
 
   useEffect(() => {
     void chargerCategories();
@@ -33,7 +35,8 @@ export function Sidebar() {
 
   useEffect(() => {
     void notesService.lister({ page: 1, limite: 1 }).then((reponse) => setTotalNotes(reponse.pagination.total));
-  }, [notes.length]);
+    void statistiquesService.globales().then(setStats);
+  }, [notes.length, categories.length]);
 
   const ouvrirToutesLesNotes = () => {
     definirFiltres({ categorieId: undefined, favoris: undefined, archivees: undefined });
@@ -57,9 +60,11 @@ export function Sidebar() {
       </div>
       <button onClick={() => navigate('/notes/nouvelle')} className="mb-6 flex w-full items-center justify-center gap-2 rounded-2xl bouton-glass px-4 py-3 font-semibold"><IconPlus size={20} /> Nouvelle note</button>
       <nav className="space-y-2">
-        {liens.map(({ to, label, Icone }) => (
+        {liens.map(({ to, label, Icone, compteur }) => (
           <NavLink key={to} to={to} onClick={() => ouverte && basculer()} className={({ isActive }) => `flex items-center gap-3 rounded-2xl px-4 py-3 text-sm ${isActive ? 'bg-white/18 text-white' : 'text-white/70 hover:bg-white/10'}`}>
-            <Icone size={20} /> {label}
+            <Icone size={20} />
+            <span className="min-w-0 flex-1">{label}</span>
+            {compteur && <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70">{stats[compteur]}</span>}
           </NavLink>
         ))}
       </nav>

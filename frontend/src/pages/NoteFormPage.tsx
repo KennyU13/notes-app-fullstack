@@ -23,7 +23,8 @@ export function NoteFormPage() {
         if (fichiers?.length) {
           await Promise.all(fichiers.map((fichier) => notesService.ajouterPieceJointe(enregistree.id, fichier)));
         }
-        navigate(`/notes/${enregistree.id}`);
+        setNote(enregistree);
+        if (!id) navigate(`/notes/${enregistree.id}`);
       }} />
     </div>
   );

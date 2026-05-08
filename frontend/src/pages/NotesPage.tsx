@@ -70,7 +70,7 @@ export function NotesPage({ favoris = false, archivees = false, corbeille = fals
             aria-label="Trier les notes"
             value={tri}
             onChange={(event) => setTri(event.target.value as TriNotes)}
-            className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-sm text-white outline-none focus:border-violet-300"
+            className="min-w-40 flex-1 rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-sm text-white outline-none focus:border-violet-300 sm:flex-none"
           >
             <option value="date">Date recente</option>
             <option value="titre">Titre</option>
@@ -93,7 +93,7 @@ export function NotesPage({ favoris = false, archivees = false, corbeille = fals
       </div>
 
       {!corbeille && (
-        <div className="grid gap-3 rounded-3xl bg-glass p-4 shadow-glass md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 rounded-3xl bg-glass p-4 shadow-glass sm:grid-cols-2 xl:grid-cols-4">
           <select aria-label="Filtrer par categorie" value={filtres.categorieId ?? ''} onChange={(e) => definirFiltreAvance({ categorieId: e.target.value || undefined })} className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none">
             <option value="">Toutes les categories</option>
             {categories.map((categorie) => <option key={categorie.id} value={categorie.id}>{categorie.nom}</option>)}
