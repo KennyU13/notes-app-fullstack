@@ -26,6 +26,19 @@ Services disponibles :
 - Swagger : http://localhost:3000/documentation
 - PostgreSQL : localhost:5432
 
+## Tests
+
+```bash
+cd backend
+npm test
+
+cd ../frontend
+npm test
+npm run test:e2e
+```
+
+Les tests end-to-end Playwright supposent que l'application Docker tourne sur `http://localhost:5173` et que l'API est disponible sur `http://localhost:3000`.
+
 ## Production
 
 ```bash
