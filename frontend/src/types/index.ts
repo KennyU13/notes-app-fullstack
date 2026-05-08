@@ -1,0 +1,17 @@
+export type Utilisateur = { id: string; email: string; prenom: string; nom: string };
+export type Categorie = { id: string; nom: string; couleur: string; icone: string; createdAt: string };
+export type Tag = { id: string; nom: string };
+export type Note = {
+  id: string;
+  titre: string;
+  contenu: string;
+  couleur: string;
+  estFavorite: boolean;
+  estArchivee: boolean;
+  categorieId?: string;
+  categorie?: Categorie | null;
+  tags: { tag: Tag }[];
+  createdAt: string;
+  updatedAt: string;
+};
+export type ReponseApi<T> = { succes: boolean; donnees: T; message?: string };

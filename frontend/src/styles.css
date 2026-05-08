@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: white;
+  background: linear-gradient(135deg, #37106f, #071525, #1e1b4b, #0f766e);
+  background-size: 300% 300%;
+  animation: fond 14s ease-in-out infinite alternate;
+}
+.toast-verre {
+  background: rgba(15, 23, 42, .82) !important;
+  color: white !important;
+  border: 1px solid rgba(255,255,255,.2) !important;
+  backdrop-filter: blur(20px);
+}
+input, textarea, select { outline: none; }

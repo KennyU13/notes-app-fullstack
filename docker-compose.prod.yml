@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: notes
+      POSTGRES_PASSWORD: notes
+      POSTGRES_DB: notes_app
+    volumes:
+      - postgres_notes:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      target: prod
+    environment:
+      DATABASE_URL: postgresql://notes:notes@postgres:5432/notes_app?schema=public
+      JWT_SECRET: changez-moi-en-production
+      JWT_EXPIRATION: 15m
+      JWT_REFRESH_EXPIRATION: 7d
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    command: sh -c "npx prisma migrate deploy && node dist/main.js"
+
+  frontend:
+    build:
+      context: ./frontend
+      target: prod
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_notes:
