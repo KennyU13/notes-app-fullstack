@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { NoteEditor } from '../components/NoteEditor';
-import { categoriesService } from '../services/categories';
 import { notesService } from '../services/notes';
+import { useCategoriesStore } from '../stores/categoriesStore';
 import { useNotesStore } from '../stores/notesStore';
-import { Categorie, Note } from '../types';
+import { Note } from '../types';
 
 export function NoteFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { creer, modifier } = useNotesStore();
+  const { categories, charger: chargerCategories } = useCategoriesStore();
   const [note, setNote] = useState<Note | null>(null);
-  const [categories, setCategories] = useState<Categorie[]>([]);
   useEffect(() => { if (id) void notesService.obtenir(id).then(setNote); }, [id]);
-  useEffect(() => { void categoriesService.lister().then(setCategories); }, []);
+  useEffect(() => { void chargerCategories(); }, [chargerCategories]);
   return (
     <div className="space-y-5">
       <h1 className="text-3xl font-bold">{id ? 'Modifier la note' : 'Nouvelle note'}</h1>
