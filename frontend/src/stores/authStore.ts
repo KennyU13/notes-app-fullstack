@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 import { createJSONStorage, persist, StateStorage } from 'zustand/middleware';
-import { authService } from '../services/auth';
+import { authService, ProfilPayload } from '../services/auth';
 import { Utilisateur } from '../types';
 
 type Session = { utilisateur: Utilisateur; accessToken: string; refreshToken: string };
@@ -17,7 +17,7 @@ type EtatAuth = {
   connexion: (email: string, motDePasse: string) => Promise<void>;
   inscription: (payload: { email: string; motDePasse: string; prenom: string; nom: string }) => Promise<void>;
   deconnexion: () => Promise<void>;
-  modifierProfil: (payload: { prenom: string; nom: string }) => Promise<void>;
+  modifierProfil: (payload: ProfilPayload) => Promise<void>;
   modifierPhoto: (photo: File) => Promise<void>;
 };
 

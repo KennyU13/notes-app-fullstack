@@ -15,6 +15,12 @@ model Utilisateur {
   nom          String
   refreshToken String?
   photoProfil  String?
+  dateNaissance DateTime?
+  lieuNaissance String?
+  poste        String?
+  cin          String?
+  accroche     String?
+  atouts       String?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   notes        Note[]

@@ -14,6 +14,12 @@ type UtilisateurSession = {
   prenom: string;
   nom: string;
   photoProfil: string | null;
+  dateNaissance: Date | null;
+  lieuNaissance: string | null;
+  poste: string | null;
+  cin: string | null;
+  accroche: string | null;
+  atouts: string | null;
   refreshToken: string | null;
   createdAt: Date;
   updatedAt: Date;

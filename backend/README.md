@@ -43,7 +43,7 @@ Swagger est disponible sur `/documentation` quand le serveur tourne.
 
 - Upload de pieces jointes sur les notes.
 - Export des notes en JSON, Markdown ou PDF.
-- Modification du profil utilisateur et photo de profil.
+- Modification du profil utilisateur : email, photo, naissance, poste, CIN, accroche et atouts.
 - Refresh token stocke hashe, Helmet, limitation des tentatives de connexion et logs d'audit.
 
 ## Reponses API

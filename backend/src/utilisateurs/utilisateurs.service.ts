@@ -6,23 +6,54 @@ import { ModifierProfilDto } from './dto/utilisateur.dto';
 export class UtilisateursService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private readonly selectionProfil = {
+    id: true,
+    email: true,
+    prenom: true,
+    nom: true,
+    photoProfil: true,
+    dateNaissance: true,
+    lieuNaissance: true,
+    poste: true,
+    cin: true,
+    accroche: true,
+    atouts: true,
+    createdAt: true,
+    updatedAt: true
+  } as const;
+
   async profil(utilisateurId: string) {
     const utilisateur = await this.prisma.utilisateur.findUnique({
       where: { id: utilisateurId },
-      select: { id: true, email: true, prenom: true, nom: true, photoProfil: true, createdAt: true, updatedAt: true }
+      select: this.selectionProfil
     });
     if (!utilisateur) throw new NotFoundException('Utilisateur introuvable');
     return utilisateur;
   }
 
   async modifierProfil(utilisateurId: string, dto: ModifierProfilDto) {
+    const email = dto.email?.trim().toLowerCase();
+    if (email) {
+      const utilisateurExistant = await this.prisma.utilisateur.findUnique({ where: { email } });
+      if (utilisateurExistant && utilisateurExistant.id !== utilisateurId) {
+        throw new BadRequestException('Cet email est deja utilise');
+      }
+    }
+
     return this.prisma.utilisateur.update({
       where: { id: utilisateurId },
       data: {
+        ...(email !== undefined ? { email } : {}),
         ...(dto.prenom !== undefined ? { prenom: dto.prenom.trim() } : {}),
-        ...(dto.nom !== undefined ? { nom: dto.nom.trim() } : {})
+        ...(dto.nom !== undefined ? { nom: dto.nom.trim() } : {}),
+        ...(dto.dateNaissance !== undefined ? { dateNaissance: dto.dateNaissance ? new Date(dto.dateNaissance) : null } : {}),
+        ...(dto.lieuNaissance !== undefined ? { lieuNaissance: this.valeurOptionnelle(dto.lieuNaissance) } : {}),
+        ...(dto.poste !== undefined ? { poste: this.valeurOptionnelle(dto.poste) } : {}),
+        ...(dto.cin !== undefined ? { cin: this.valeurOptionnelle(dto.cin) } : {}),
+        ...(dto.accroche !== undefined ? { accroche: this.valeurOptionnelle(dto.accroche) } : {}),
+        ...(dto.atouts !== undefined ? { atouts: this.valeurOptionnelle(dto.atouts) } : {})
       },
-      select: { id: true, email: true, prenom: true, nom: true, photoProfil: true, createdAt: true, updatedAt: true }
+      select: this.selectionProfil
     });
   }
 
@@ -34,7 +65,12 @@ export class UtilisateursService {
     return this.prisma.utilisateur.update({
       where: { id: utilisateurId },
       data: { photoProfil },
-      select: { id: true, email: true, prenom: true, nom: true, photoProfil: true, createdAt: true, updatedAt: true }
+      select: this.selectionProfil
     });
+  }
+
+  private valeurOptionnelle(valeur?: string | null) {
+    const nettoyee = valeur?.trim();
+    return nettoyee ? nettoyee : null;
   }
 }

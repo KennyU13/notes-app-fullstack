@@ -89,8 +89,17 @@ test('parcours complet : inscription, categorie, note, edition, detail categorie
   await page.getByRole('link', { name: 'Profil' }).click();
   await page.locator('input[type="file"]').setInputFiles('tests/fixtures/avatar.svg');
   await expect(page.getByAltText('Photo de profil')).toBeVisible();
+  await page.getByLabel('Email', { exact: true }).fill(email);
   await page.getByLabel('Prenom', { exact: true }).fill('Kenny');
   await page.getByLabel('Nom', { exact: true }).fill('Testeur');
+  await page.getByLabel('Date de naissance', { exact: true }).fill('1995-04-13');
+  await page.getByLabel('Lieu de naissance', { exact: true }).fill('Antananarivo');
+  await page.getByLabel('Poste', { exact: true }).fill('Developpeur backend');
+  await page.getByLabel('CIN', { exact: true }).fill('101011234567');
+  await page.getByLabel('Accroche', { exact: true }).fill('Construire des applications utiles et propres.');
+  await page.getByLabel('Mes atouts').fill('Rigueur, curiosite, autonomie.');
   await page.getByRole('button', { name: 'Enregistrer' }).click();
   await expect(page.getByText('Kenny Testeur')).toBeVisible();
+  await expect(page.getByText('Developpeur backend')).toBeVisible();
+  await expect(page.getByText('Antananarivo')).toBeVisible();
 });
