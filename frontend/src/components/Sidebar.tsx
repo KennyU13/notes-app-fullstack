@@ -81,7 +81,7 @@ export function Sidebar() {
         <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
           <button onClick={ouvrirToutesLesNotes} className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm ${location.pathname === '/notes' && !location.search ? 'bg-white/18 text-white' : 'text-white/70 hover:bg-white/10'}`}>
             <span className="h-3 w-3 rounded-full bg-white/50" />
-            <span className="min-w-0 flex-1">Toutes les notes</span>
+            <span className="min-w-0 flex-1">Toutes catégories</span>
             <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">{stats.notes}</span>
           </button>
           {categories.map((categorie) => (
