@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist, StateStorage } from 'zustand/middleware';
 import { authService } from '../services/auth';
 import { Utilisateur } from '../types';
 
@@ -10,11 +10,24 @@ type EtatAuth = {
   utilisateur: Utilisateur | null;
   token: string | null;
   refreshToken: string | null;
+  estHydrate: boolean;
   definirSession: (session: Session) => void;
+  definirHydratation: (estHydrate: boolean) => void;
   connexion: (email: string, motDePasse: string) => Promise<void>;
   inscription: (payload: { email: string; motDePasse: string; prenom: string; nom: string }) => Promise<void>;
   deconnexion: () => Promise<void>;
 };
+
+const stockageMemoire = (): StateStorage => {
+  const donnees = new Map<string, string>();
+  return {
+    getItem: (nom) => donnees.get(nom) ?? null,
+    setItem: (nom, valeur) => donnees.set(nom, valeur),
+    removeItem: (nom) => donnees.delete(nom)
+  };
+};
+
+const stockageAuth = () => (typeof localStorage === 'undefined' ? stockageMemoire() : localStorage);
 
 export const useAuthStore = create<EtatAuth>()(
   persist(
@@ -22,7 +35,9 @@ export const useAuthStore = create<EtatAuth>()(
       utilisateur: null,
       token: null,
       refreshToken: null,
+      estHydrate: false,
       definirSession: (session) => set({ utilisateur: session.utilisateur, token: session.accessToken, refreshToken: session.refreshToken }),
+      definirHydratation: (estHydrate) => set({ estHydrate }),
       connexion: async (email, motDePasse) => {
         const session = await authService.connexion({ email, motDePasse });
         get().definirSession(session);
@@ -38,6 +53,13 @@ export const useAuthStore = create<EtatAuth>()(
         toast.success('Deconnexion reussie');
       }
     }),
-    { name: 'notes-auth' }
+    {
+      name: 'notes-auth',
+      storage: createJSONStorage(stockageAuth),
+      partialize: (etat) => ({ utilisateur: etat.utilisateur, token: etat.token, refreshToken: etat.refreshToken }),
+      onRehydrateStorage: () => (etat) => {
+        etat?.definirHydratation(true);
+      }
+    }
   )
 );
