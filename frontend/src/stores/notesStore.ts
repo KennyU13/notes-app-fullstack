@@ -18,8 +18,6 @@ type EtatNotes = {
   archiver: (id: string) => Promise<void>;
 };
 
-const remplacer = (notes: Note[], note: Note) => notes.map((item) => (item.id === note.id ? note : item));
-
 export const useNotesStore = create<EtatNotes>((set, get) => ({
   notes: [],
   noteActive: null,
@@ -37,27 +35,28 @@ export const useNotesStore = create<EtatNotes>((set, get) => ({
   },
   creer: async (payload) => {
     const note = await notesService.creer(payload);
-    set((s) => ({ notes: [note, ...s.notes] }));
+    await get().charger();
     toast.success('Note creee');
     return note;
   },
   modifier: async (id, payload) => {
     const note = await notesService.modifier(id, payload);
-    set((s) => ({ notes: remplacer(s.notes, note), noteActive: note }));
+    set({ noteActive: note });
+    await get().charger();
     toast.success('Note mise a jour');
     return note;
   },
   supprimer: async (id) => {
     await notesService.supprimer(id);
-    set((s) => ({ notes: s.notes.filter((n) => n.id !== id) }));
+    await get().charger();
     toast.success('Note supprimee');
   },
   favori: async (id) => {
-    const note = await notesService.favori(id);
-    set((s) => ({ notes: remplacer(s.notes, note) }));
+    await notesService.favori(id);
+    await get().charger();
   },
   archiver: async (id) => {
-    const note = await notesService.archiver(id);
-    set((s) => ({ notes: remplacer(s.notes, note) }));
+    await notesService.archiver(id);
+    await get().charger();
   }
 }));
