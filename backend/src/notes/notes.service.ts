@@ -27,6 +27,7 @@ export class NotesService {
       ...(filtre.categorieId ? { categorieId: filtre.categorieId } : {}),
       ...(filtre.favoris !== undefined ? { estFavorite: filtre.favoris } : {}),
       ...(filtre.archivees !== undefined ? { estArchivee: filtre.archivees } : {}),
+      ...(filtre.epinglees !== undefined ? { estEpinglee: filtre.epinglees } : {}),
       ...(filtre.tagId ? { tags: { some: { tagId: filtre.tagId } } } : {}),
       ...(filtre.recherche
         ? { OR: [{ titre: { contains: filtre.recherche, mode: 'insensitive' } }, { contenu: { contains: filtre.recherche, mode: 'insensitive' } }] }

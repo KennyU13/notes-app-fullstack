@@ -67,6 +67,11 @@ export class RechercherNotesDto {
   @IsOptional()
   @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()
+  epinglees?: boolean;
+
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
   corbeille?: boolean;
 
   @IsOptional()

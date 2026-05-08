@@ -1,4 +1,4 @@
-import { IconArchive, IconCategory, IconNote, IconStar, IconTrash } from '@tabler/icons-react';
+import { IconArchive, IconCategory, IconNote, IconPinned, IconStar } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { StatsCard } from '../components/StatsCard';
 import { notesService } from '../services/notes';
@@ -10,7 +10,7 @@ import { Note } from '../types';
 export function DashboardPage() {
   const { charger } = useNotesStore();
   const { categories, charger: chargerCategories } = useCategoriesStore();
-  const [stats, setStats] = useState<StatistiquesGlobales>({ notes: 0, favoris: 0, archivees: 0, corbeille: 0, categories: 0 });
+  const [stats, setStats] = useState<StatistiquesGlobales>({ notes: 0, favoris: 0, archivees: 0, epinglees: 0, corbeille: 0, categories: 0 });
   const [recentes, setRecentes] = useState<Note[]>([]);
   const [compteursCategories, setCompteursCategories] = useState<Record<string, number>>({});
 
@@ -40,7 +40,7 @@ export function DashboardPage() {
         <StatsCard titre="Favoris" valeur={stats.favoris} Icone={IconStar} description="Notes marquees importantes" />
         <StatsCard titre="Archivees" valeur={stats.archivees} Icone={IconArchive} description="Notes conservees en archive" />
         <StatsCard titre="Categories" valeur={stats.categories} Icone={IconCategory} description="Classements disponibles" />
-        <StatsCard titre="Corbeille" valeur={stats.corbeille} Icone={IconTrash} description="Notes en attente de restauration" />
+        <StatsCard titre="Notes epinglees" valeur={stats.epinglees} Icone={IconPinned} description="Notes importantes gardees en haut" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,.8fr)]">

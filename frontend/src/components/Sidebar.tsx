@@ -27,7 +27,7 @@ export function Sidebar() {
   const ouverte = useUiStore((s) => s.sidebarOuverte);
   const basculer = useUiStore((s) => s.basculerSidebar);
   const [totalNotes, setTotalNotes] = useState(0);
-  const [stats, setStats] = useState<StatistiquesGlobales>({ notes: 0, favoris: 0, archivees: 0, corbeille: 0, categories: 0 });
+  const [stats, setStats] = useState<StatistiquesGlobales>({ notes: 0, favoris: 0, archivees: 0, epinglees: 0, corbeille: 0, categories: 0 });
   const [compteursCategories, setCompteursCategories] = useState<Record<string, number>>({});
 
   useEffect(() => {
