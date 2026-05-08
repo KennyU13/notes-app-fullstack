@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist, StateStorage } from 'zustand/middleware';
 
 type EtatUi = {
   theme: 'dark' | 'light';
@@ -9,6 +9,17 @@ type EtatUi = {
   definirVue: (vue: 'grille' | 'liste') => void;
   basculerSidebar: () => void;
 };
+
+const stockageMemoire = (): StateStorage => {
+  const donnees = new Map<string, string>();
+  return {
+    getItem: (nom) => donnees.get(nom) ?? null,
+    setItem: (nom, valeur) => donnees.set(nom, valeur),
+    removeItem: (nom) => donnees.delete(nom)
+  };
+};
+
+const stockageUi = () => (typeof localStorage === 'undefined' ? stockageMemoire() : localStorage);
 
 export const useUiStore = create<EtatUi>()(
   persist(
@@ -20,6 +31,6 @@ export const useUiStore = create<EtatUi>()(
       definirVue: (vue) => set({ vue }),
       basculerSidebar: () => set((s) => ({ sidebarOuverte: !s.sidebarOuverte }))
     }),
-    { name: 'notes-ui' }
+    { name: 'notes-ui', storage: createJSONStorage(stockageUi) }
   )
 );

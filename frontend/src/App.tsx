@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { PrivateRoute } from './components/PrivateRoute';
@@ -17,6 +18,12 @@ function Page({ children }: { children: React.ReactNode }) {
 export default function App() {
   const location = useLocation();
   const theme = useUiStore((s) => s.theme);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
   return (
     <div className={theme}>
       <AnimatePresence mode="wait">
