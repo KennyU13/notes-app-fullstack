@@ -7,6 +7,11 @@ services:
       POSTGRES_DB: notes_app
     volumes:
       - postgres_notes:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notes -d notes_app"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build:
@@ -21,8 +26,9 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
-    command: sh -c "npx prisma migrate deploy && node dist/main.js"
+      postgres:
+        condition: service_healthy
+    command: sh -c "npm run db:setup && node dist/main.js"
 
   frontend:
     build:

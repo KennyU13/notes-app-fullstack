@@ -12,6 +12,13 @@ Application de gestion de notes personnelles en monorepo :
 docker-compose up --build
 ```
 
+Au demarrage Docker, le backend attend que PostgreSQL soit pret, applique les migrations Prisma, puis lance le seed local si `SEED_DEMO_DATA=true`.
+
+Compte demo cree en local :
+
+- Email : `demo@notes.local`
+- Mot de passe : `password123`
+
 Services disponibles :
 
 - Frontend : http://localhost:5173
@@ -33,6 +40,17 @@ Avant une vraie mise en production, remplacez `JWT_SECRET` et les identifiants P
 docker-compose down -v
 docker-compose up -d --build
 ```
+
+## Base de donnees
+
+Commandes utiles :
+
+```bash
+docker compose exec backend npm run db:setup
+docker compose exec -e SEED_DEMO_DATA=true backend npm run db:seed
+```
+
+`db:setup` execute les migrations puis le seed. En production, gardez `SEED_DEMO_DATA` absent ou a `false`.
 
 ## Etat initial verifie
 

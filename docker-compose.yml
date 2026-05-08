@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_notes:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notes -d notes_app"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build:
@@ -19,6 +24,7 @@ services:
       JWT_SECRET: secret-local-a-remplacer
       JWT_EXPIRATION: 15m
       JWT_REFRESH_EXPIRATION: 7d
+      SEED_DEMO_DATA: "true"
       PORT: 3000
     ports:
       - "3000:3000"
@@ -26,8 +32,9 @@ services:
       - ./backend:/app
       - /app/node_modules
     depends_on:
-      - postgres
-    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+      postgres:
+        condition: service_healthy
+    command: sh -c "npm run db:setup && npm run start:dev"
 
   frontend:
     build:
