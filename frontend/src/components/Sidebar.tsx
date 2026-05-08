@@ -28,6 +28,7 @@ export function Sidebar() {
   const basculer = useUiStore((s) => s.basculerSidebar);
   const [totalNotes, setTotalNotes] = useState(0);
   const [stats, setStats] = useState<StatistiquesGlobales>({ notes: 0, favoris: 0, archivees: 0, corbeille: 0, categories: 0 });
+  const [compteursCategories, setCompteursCategories] = useState<Record<string, number>>({});
 
   useEffect(() => {
     void chargerCategories();
@@ -36,6 +37,10 @@ export function Sidebar() {
   useEffect(() => {
     void notesService.lister({ page: 1, limite: 1 }).then((reponse) => setTotalNotes(reponse.pagination.total));
     void statistiquesService.globales().then(setStats);
+    void Promise.all(categories.map(async (categorie) => {
+      const reponse = await notesService.lister({ page: 1, limite: 1, categorieId: categorie.id });
+      return [categorie.id, reponse.pagination.total] as const;
+    })).then((items) => setCompteursCategories(Object.fromEntries(items)));
   }, [notes.length, categories.length]);
 
   const ouvrirToutesLesNotes = () => {
@@ -68,17 +73,22 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="mt-8">
-        <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-wide text-white/45">Categories</p>
-        <div className="space-y-2">
+      <div className="mt-8 min-h-0">
+        <div className="mb-3 flex items-center justify-between px-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-white/45">Categories</p>
+          <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/55">{categories.length}</span>
+        </div>
+        <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
           <button onClick={ouvrirToutesLesNotes} className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm ${location.pathname === '/notes' && !location.search ? 'bg-white/18 text-white' : 'text-white/70 hover:bg-white/10'}`}>
             <span className="h-3 w-3 rounded-full bg-white/50" />
-            Toutes les notes
+            <span className="min-w-0 flex-1">Toutes les notes</span>
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">{stats.notes}</span>
           </button>
           {categories.map((categorie) => (
             <button key={categorie.id} onClick={() => ouvrirCategorie(categorie.id)} className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm ${location.pathname === `/categories/${categorie.id}` ? 'bg-white/18 text-white' : 'text-white/70 hover:bg-white/10'}`}>
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: categorie.couleur }} />
               <span className="min-w-0 flex-1 truncate">{categorie.nom}</span>
+              <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">{compteursCategories[categorie.id] ?? 0}</span>
             </button>
           ))}
         </div>

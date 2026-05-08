@@ -8,6 +8,7 @@ type EtatCategories = {
   chargement: boolean;
   charger: () => Promise<void>;
   creer: (payload: { nom: string; couleur?: string; icone?: string }) => Promise<void>;
+  modifier: (id: string, payload: { nom?: string; couleur?: string; icone?: string }) => Promise<void>;
   supprimer: (id: string) => Promise<void>;
 };
 
@@ -25,6 +26,11 @@ export const useCategoriesStore = create<EtatCategories>((set, get) => ({
   creer: async (payload) => {
     await categoriesService.creer(payload);
     toast.success('Categorie creee');
+    await get().charger();
+  },
+  modifier: async (id, payload) => {
+    await categoriesService.modifier(id, payload);
+    toast.success('Categorie mise a jour');
     await get().charger();
   },
   supprimer: async (id) => {

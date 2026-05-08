@@ -16,7 +16,9 @@ export function Header() {
       <div className="order-3 w-full sm:order-none sm:min-w-64 sm:flex-1"><SearchBar /></div>
       <button title="Theme" onClick={basculerTheme} className="rounded-2xl bg-white/10 p-3">{theme === 'dark' ? <IconMoonStars /> : <IconSun />}</button>
       <div className="hidden items-center gap-3 rounded-2xl bg-white/10 px-3 py-2 sm:flex">
-        <div className="grid h-9 w-9 place-items-center rounded-full bg-cyan-400/40 font-bold">{utilisateur?.prenom?.[0]}</div>
+        <div className="grid h-9 w-9 overflow-hidden rounded-full bg-cyan-400/40 font-bold">
+          {utilisateur?.photoProfil ? <img src={utilisateur.photoProfil} alt="Profil" className="h-full w-full object-cover" /> : <span className="grid place-items-center">{utilisateur?.prenom?.[0]}</span>}
+        </div>
         <span className="text-sm text-white/80">{utilisateur?.prenom}</span>
       </div>
       <button title="Deconnexion" onClick={() => void deconnexion()} className="rounded-2xl bg-white/10 p-3"><IconLogout /></button>

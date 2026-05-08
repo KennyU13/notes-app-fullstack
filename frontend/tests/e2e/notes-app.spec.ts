@@ -21,7 +21,7 @@ test('parcours complet : inscription, categorie, note, edition, detail categorie
 
   await page.getByRole('link', { name: 'Categories' }).click();
   await expect(page.getByRole('heading', { name: 'Categories' })).toBeVisible();
-  await page.getByPlaceholder('Nouvelle categorie').fill(categorie);
+  await page.getByPlaceholder('Nom de la categorie').fill(categorie);
   await page.getByRole('button', { name: 'Ajouter' }).click();
   await expect(page.getByText(categorie).first()).toBeVisible();
 
@@ -49,7 +49,7 @@ test('parcours complet : inscription, categorie, note, edition, detail categorie
   await page.getByRole('button', { name: categorie }).click();
   await expect(page).toHaveURL(/\/categories\//);
   await expect(page.getByRole('heading', { name: categorie })).toBeVisible();
-  await expect(page.getByText('1', { exact: true })).toBeVisible();
+  await expect(page.getByRole('main').getByText('1', { exact: true })).toBeVisible();
   await expect(page.getByText('note associee')).toBeVisible();
   await expect(page.getByText(titreModifie)).toBeVisible();
 
@@ -85,4 +85,12 @@ test('parcours complet : inscription, categorie, note, edition, detail categorie
 
   await page.getByRole('link', { name: 'Notes' }).click();
   await expect(page.getByText(titreModifie)).toBeVisible();
+
+  await page.getByRole('link', { name: 'Profil' }).click();
+  await page.locator('input[type="file"]').setInputFiles('tests/fixtures/avatar.svg');
+  await expect(page.getByAltText('Photo de profil')).toBeVisible();
+  await page.getByLabel('Prenom', { exact: true }).fill('Kenny');
+  await page.getByLabel('Nom', { exact: true }).fill('Testeur');
+  await page.getByRole('button', { name: 'Enregistrer' }).click();
+  await expect(page.getByText('Kenny Testeur')).toBeVisible();
 });

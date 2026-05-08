@@ -1,4 +1,4 @@
-export type Utilisateur = { id: string; email: string; prenom: string; nom: string };
+export type Utilisateur = { id: string; email: string; prenom: string; nom: string; photoProfil?: string | null };
 export type Categorie = { id: string; nom: string; couleur: string; icone: string; createdAt: string };
 export type Tag = { id: string; nom: string };
 export type PieceJointe = { id: string; nomOriginal: string; nomFichier: string; typeMime: string; taille: number; createdAt: string };

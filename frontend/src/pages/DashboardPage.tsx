@@ -1,25 +1,37 @@
-import { IconArchive, IconCategory, IconNote, IconPinned, IconStar, IconTag, IconTrash } from '@tabler/icons-react';
+import { IconArchive, IconCategory, IconDownload, IconNote, IconPaperclip, IconPinned, IconShieldLock, IconStar, IconTag, IconTrash } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
 import { StatsCard } from '../components/StatsCard';
 import { notesService } from '../services/notes';
 import { statistiquesService, StatistiquesGlobales } from '../services/statistiques';
+import { useCategoriesStore } from '../stores/categoriesStore';
 import { useNotesStore } from '../stores/notesStore';
 import { useTagsStore } from '../stores/tagsStore';
 import { Note } from '../types';
 
 export function DashboardPage() {
   const { notes, charger } = useNotesStore();
+  const { categories, charger: chargerCategories } = useCategoriesStore();
   const { tags, charger: chargerTags } = useTagsStore();
   const [stats, setStats] = useState<StatistiquesGlobales>({ notes: 0, favoris: 0, archivees: 0, corbeille: 0, categories: 0 });
   const [recentes, setRecentes] = useState<Note[]>([]);
+  const [compteursCategories, setCompteursCategories] = useState<Record<string, number>>({});
   const notesEpinglees = useMemo(() => notes.filter((note) => note.estEpinglee).length, [notes]);
+  const piecesJointes = useMemo(() => notes.reduce((total, note) => total + (note.piecesJointes?.length ?? 0), 0), [notes]);
 
   useEffect(() => {
     void charger();
+    void chargerCategories();
     void chargerTags();
     void statistiquesService.globales().then(setStats);
     void notesService.lister({ page: 1, limite: 5 }).then((reponse) => setRecentes(reponse.items));
-  }, [charger, chargerTags]);
+  }, [charger, chargerCategories, chargerTags]);
+
+  useEffect(() => {
+    void Promise.all(categories.map(async (categorie) => {
+      const reponse = await notesService.lister({ page: 1, limite: 1, categorieId: categorie.id });
+      return [categorie.id, reponse.pagination.total] as const;
+    })).then((items) => setCompteursCategories(Object.fromEntries(items)));
+  }, [categories]);
 
   return (
     <div className="space-y-6">
@@ -66,6 +78,42 @@ export function DashboardPage() {
             <IconTag className="mb-4 text-cyan-200" />
             <p className="text-sm text-white/60">Tags utilises</p>
             <p className="mt-2 text-3xl font-bold">{tags.length}</p>
+          </div>
+        </section>
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-3">
+        <section className="rounded-3xl bg-glass p-5 shadow-glass xl:col-span-2">
+          <h2 className="text-xl font-semibold">Repartition par categorie</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {categories.slice(0, 6).map((categorie) => (
+              <div key={categorie.id} className="flex items-center justify-between gap-3 rounded-2xl bg-white/10 p-4">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: categorie.couleur }} />
+                  <span className="truncate text-sm">{categorie.nom}</span>
+                </div>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs">{compteursCategories[categorie.id] ?? 0}</span>
+              </div>
+            ))}
+            {categories.length === 0 && <p className="rounded-2xl bg-white/10 p-4 text-sm text-white/60">Aucune categorie creee.</p>}
+          </div>
+        </section>
+
+        <section className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1">
+          <div className="rounded-3xl bg-glass p-5 shadow-glass">
+            <IconPaperclip className="mb-4 text-cyan-200" />
+            <p className="text-sm text-white/60">Pieces jointes</p>
+            <p className="mt-2 text-3xl font-bold">{piecesJointes}</p>
+          </div>
+          <div className="rounded-3xl bg-glass p-5 shadow-glass">
+            <IconDownload className="mb-4 text-cyan-200" />
+            <p className="text-sm text-white/60">Exports disponibles</p>
+            <p className="mt-2 text-lg font-semibold">JSON / MD / PDF</p>
+          </div>
+          <div className="rounded-3xl bg-glass p-5 shadow-glass">
+            <IconShieldLock className="mb-4 text-cyan-200" />
+            <p className="text-sm text-white/60">Securite</p>
+            <p className="mt-2 text-lg font-semibold">JWT, audit, rate limit</p>
           </div>
         </section>
       </div>

@@ -23,6 +23,8 @@ Le frontend tourne sur http://localhost:5173 et appelle l'API sur `VITE_API_URL`
 - Corbeille avec restauration.
 - Upload de pieces jointes ou images dans une note.
 - Export JSON, Markdown et PDF depuis la liste des notes.
+- Tableau de bord enrichi et profil modifiable avec photo.
+- Categories modernisees avec couleurs, icones et compteurs.
 - Creation, edition, suppression, favoris et archivage.
 - Page detail categorie avec couleur, nombre de notes et notes associees.
 - Categories, profil, notifications et animations.

@@ -13,6 +13,7 @@ type UtilisateurSession = {
   motDePasse: string;
   prenom: string;
   nom: string;
+  photoProfil: string | null;
   refreshToken: string | null;
   createdAt: Date;
   updatedAt: Date;

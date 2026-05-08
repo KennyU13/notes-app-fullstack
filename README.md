@@ -36,6 +36,8 @@ Fonctionnalites principales :
 - Pieces jointes et images ajoutees aux notes.
 - Export des notes en JSON, Markdown ou PDF.
 - Securite renforcee : Helmet, refresh token hashe, limitation des tentatives de connexion et logs d'audit.
+- Tableau de bord enrichi avec repartition par categorie, pieces jointes, exports et indicateurs de securite.
+- Profil modifiable avec photo de profil.
 
 ## Tests
 
