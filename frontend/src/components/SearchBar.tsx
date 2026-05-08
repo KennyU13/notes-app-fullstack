@@ -7,10 +7,12 @@ export function SearchBar() {
   const [valeur, setValeur] = useState('');
   const recherche = useDebounce(valeur, 300);
   const definirFiltres = useNotesStore((s) => s.definirFiltres);
+  const charger = useNotesStore((s) => s.charger);
 
   useEffect(() => {
     definirFiltres({ recherche: recherche || undefined });
-  }, [recherche, definirFiltres]);
+    void charger();
+  }, [recherche, definirFiltres, charger]);
 
   return (
     <label className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-3">

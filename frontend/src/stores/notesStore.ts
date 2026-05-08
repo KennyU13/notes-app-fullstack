@@ -10,7 +10,7 @@ type EtatNotes = {
   chargement: boolean;
   filtres: Filtres;
   definirFiltres: (filtres: Partial<Filtres>) => void;
-  charger: () => Promise<void>;
+  charger: (silencieux?: boolean) => Promise<void>;
   creer: (payload: NotePayload) => Promise<Note>;
   modifier: (id: string, payload: Partial<NotePayload>) => Promise<Note>;
   supprimer: (id: string) => Promise<void>;
@@ -18,45 +18,51 @@ type EtatNotes = {
   archiver: (id: string) => Promise<void>;
 };
 
+const remplacer = (notes: Note[], note: Note) => notes.map((item) => (item.id === note.id ? note : item));
+
 export const useNotesStore = create<EtatNotes>((set, get) => ({
   notes: [],
   noteActive: null,
   chargement: false,
   filtres: {},
   definirFiltres: (filtres) => set((s) => ({ filtres: { ...s.filtres, ...filtres } })),
-  charger: async () => {
-    set({ chargement: true });
+  charger: async (silencieux = false) => {
+    if (!silencieux) set({ chargement: true });
     try {
       const reponse = await notesService.lister(get().filtres);
       set({ notes: reponse.items });
     } finally {
-      set({ chargement: false });
+      if (!silencieux) set({ chargement: false });
     }
   },
   creer: async (payload) => {
     const note = await notesService.creer(payload);
-    await get().charger();
+    set((s) => ({ notes: [note, ...s.notes] }));
+    void get().charger(true);
     toast.success('Note creee');
     return note;
   },
   modifier: async (id, payload) => {
     const note = await notesService.modifier(id, payload);
-    set({ noteActive: note });
-    await get().charger();
+    set((s) => ({ notes: remplacer(s.notes, note), noteActive: note }));
+    void get().charger(true);
     toast.success('Note mise a jour');
     return note;
   },
   supprimer: async (id) => {
     await notesService.supprimer(id);
-    await get().charger();
+    set((s) => ({ notes: s.notes.filter((note) => note.id !== id) }));
+    void get().charger(true);
     toast.success('Note supprimee');
   },
   favori: async (id) => {
-    await notesService.favori(id);
-    await get().charger();
+    const note = await notesService.favori(id);
+    set((s) => ({ notes: remplacer(s.notes, note) }));
+    void get().charger(true);
   },
   archiver: async (id) => {
-    await notesService.archiver(id);
-    await get().charger();
+    const note = await notesService.archiver(id);
+    set((s) => ({ notes: remplacer(s.notes, note) }));
+    void get().charger(true);
   }
 }));
