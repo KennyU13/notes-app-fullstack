@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('parcours complet : inscription, categorie, note, edition, filtre et actualisation', async ({ page }) => {
+test('parcours complet : inscription, categorie, note, edition, detail categorie et actualisation', async ({ page }) => {
   const suffixe = Date.now();
   const email = `e2e-${suffixe}@notes.local`;
   const motDePasse = 'password123';
@@ -46,10 +46,14 @@ test('parcours complet : inscription, categorie, note, edition, filtre et actual
   await expect(page.getByText(titreModifie)).toBeVisible();
 
   await page.getByRole('button', { name: categorie }).click();
-  await expect(page).toHaveURL(/\/notes\?categorieId=/);
+  await expect(page).toHaveURL(/\/categories\//);
+  await expect(page.getByRole('heading', { name: categorie })).toBeVisible();
+  await expect(page.getByText('1', { exact: true })).toBeVisible();
+  await expect(page.getByText('note associee')).toBeVisible();
   await expect(page.getByText(titreModifie)).toBeVisible();
 
   await page.reload();
+  await expect(page.getByRole('heading', { name: categorie })).toBeVisible();
   await expect(page.getByText(titreModifie)).toBeVisible();
   await expect(page.getByText(contenuModifie)).toBeVisible();
 

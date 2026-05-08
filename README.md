@@ -26,6 +26,12 @@ Services disponibles :
 - Swagger : http://localhost:3000/documentation
 - PostgreSQL : localhost:5432
 
+Fonctionnalites principales :
+
+- Gestion des notes, favoris, archives, categories et tags.
+- Page detail categorie avec nombre de notes et liste associee.
+- Tri des notes par date, titre, favoris, couleur ou categorie.
+
 ## Tests
 
 ```bash

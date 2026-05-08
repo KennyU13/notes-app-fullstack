@@ -4,6 +4,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { PrivateRoute } from './components/PrivateRoute';
 import { AuthPage } from './pages/AuthPage';
+import { CategorieDetailPage } from './pages/CategorieDetailPage';
 import { CategoriesPage } from './pages/CategoriesPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { NoteFormPage } from './pages/NoteFormPage';
@@ -39,6 +40,7 @@ export default function App() {
               <Route path="notes/archivees" element={<Page><NotesPage archivees /></Page>} />
               <Route path="notes/:id" element={<Page><NoteFormPage /></Page>} />
               <Route path="categories" element={<Page><CategoriesPage /></Page>} />
+              <Route path="categories/:id" element={<Page><CategorieDetailPage /></Page>} />
               <Route path="profil" element={<Page><ProfilPage /></Page>} />
             </Route>
           </Route>

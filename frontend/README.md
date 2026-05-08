@@ -18,5 +18,7 @@ Le frontend tourne sur http://localhost:5173 et appelle l'API sur `VITE_API_URL`
 - Routes protegees.
 - Recherche debounced.
 - Notes en grille ou liste.
+- Tri des notes par date, titre, favoris, couleur ou categorie.
 - Creation, edition, suppression, favoris et archivage.
+- Page detail categorie avec couleur, nombre de notes et notes associees.
 - Categories, profil, notifications et animations.

@@ -1,6 +1,6 @@
 import { IconArchive, IconCategory, IconHome, IconNote, IconPlus, IconStar, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { notesService } from '../services/notes';
 import { useCategoriesStore } from '../stores/categoriesStore';
 import { useNotesStore } from '../stores/notesStore';
@@ -17,10 +17,9 @@ const liens = [
 
 export function Sidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const notes = useNotesStore((s) => s.notes);
-  const filtres = useNotesStore((s) => s.filtres);
   const definirFiltres = useNotesStore((s) => s.definirFiltres);
-  const chargerNotes = useNotesStore((s) => s.charger);
   const categories = useCategoriesStore((s) => s.categories);
   const chargerCategories = useCategoriesStore((s) => s.charger);
   const ouverte = useUiStore((s) => s.sidebarOuverte);
@@ -35,10 +34,15 @@ export function Sidebar() {
     void notesService.lister({ page: 1, limite: 1 }).then((reponse) => setTotalNotes(reponse.pagination.total));
   }, [notes.length]);
 
-  const filtrerParCategorie = (categorieId?: string) => {
+  const ouvrirToutesLesNotes = () => {
+    definirFiltres({ categorieId: undefined, favoris: undefined, archivees: undefined });
+    navigate('/notes');
+    if (ouverte) basculer();
+  };
+
+  const ouvrirCategorie = (categorieId: string) => {
     definirFiltres({ categorieId, favoris: undefined, archivees: undefined });
-    void chargerNotes();
-    navigate(categorieId ? `/notes?categorieId=${categorieId}` : '/notes');
+    navigate(`/categories/${categorieId}`);
     if (ouverte) basculer();
   };
 
@@ -61,12 +65,12 @@ export function Sidebar() {
       <div className="mt-8">
         <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-wide text-white/45">Categories</p>
         <div className="space-y-2">
-          <button onClick={() => filtrerParCategorie(undefined)} className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm ${!filtres.categorieId ? 'bg-white/18 text-white' : 'text-white/70 hover:bg-white/10'}`}>
+          <button onClick={ouvrirToutesLesNotes} className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm ${location.pathname === '/notes' && !location.search ? 'bg-white/18 text-white' : 'text-white/70 hover:bg-white/10'}`}>
             <span className="h-3 w-3 rounded-full bg-white/50" />
             Toutes les notes
           </button>
           {categories.map((categorie) => (
-            <button key={categorie.id} onClick={() => filtrerParCategorie(categorie.id)} className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm ${filtres.categorieId === categorie.id ? 'bg-white/18 text-white' : 'text-white/70 hover:bg-white/10'}`}>
+            <button key={categorie.id} onClick={() => ouvrirCategorie(categorie.id)} className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm ${location.pathname === `/categories/${categorie.id}` ? 'bg-white/18 text-white' : 'text-white/70 hover:bg-white/10'}`}>
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: categorie.couleur }} />
               <span className="min-w-0 flex-1 truncate">{categorie.nom}</span>
             </button>
