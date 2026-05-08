@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 import { UtilisateurCourant, UtilisateurJwt } from '../commun/decorateurs/utilisateur-courant';
 import { JwtAuthGuard } from '../commun/gardes/jwt-auth.guard';
 import { CreerNoteDto, ModifierNoteDto, RechercherNotesDto } from './dto/note.dto';
@@ -17,9 +19,22 @@ export class NotesController {
     return this.notes.lister(utilisateur.id, filtre);
   }
 
+  @Get('export/:format')
+  async exporter(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('format') format: 'json' | 'markdown' | 'pdf', @Res() reponse: Response) {
+    const exportNotes = await this.notes.exporter(utilisateur.id, format);
+    reponse.setHeader('Content-Type', exportNotes.typeMime);
+    reponse.setHeader('Content-Disposition', `attachment; filename="${exportNotes.nomFichier}"`);
+    return reponse.send(exportNotes.contenu);
+  }
+
   @Post()
   creer(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Body() dto: CreerNoteDto) {
     return this.notes.creer(utilisateur.id, dto);
+  }
+
+  @Delete('pieces-jointes/:pieceId')
+  supprimerPieceJointe(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('pieceId') pieceId: string) {
+    return this.notes.supprimerPieceJointe(utilisateur.id, pieceId);
   }
 
   @Get(':id')
@@ -60,5 +75,11 @@ export class NotesController {
   @Patch(':id/epingler')
   epingler(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('id') id: string) {
     return this.notes.basculerEpingle(utilisateur.id, id);
+  }
+
+  @Post(':id/pieces-jointes')
+  @UseInterceptors(FileInterceptor('fichier'))
+  ajouterPieceJointe(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Param('id') id: string, @UploadedFile() fichier: any) {
+    return this.notes.ajouterPieceJointe(utilisateur.id, id, fichier);
   }
 }

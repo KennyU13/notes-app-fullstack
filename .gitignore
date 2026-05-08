@@ -13,6 +13,7 @@ frontend/playwright-report/
 backend/prisma/seed.js
 backend/prisma/seed.d.ts
 backend/prisma/seed.js.map
+backend/uploads/
 
 # Environnement
 .env

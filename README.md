@@ -33,6 +33,9 @@ Fonctionnalites principales :
 - Recherche avancee combinant mot-cle, categorie, tag, favori et archive.
 - Tri des notes par date, titre, favoris, couleur ou categorie, avec notes epinglees en haut.
 - Corbeille avec restauration avant suppression definitive.
+- Pieces jointes et images ajoutees aux notes.
+- Export des notes en JSON, Markdown ou PDF.
+- Securite renforcee : Helmet, refresh token hashe, limitation des tentatives de connexion et logs d'audit.
 
 ## Tests
 

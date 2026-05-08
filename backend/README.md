@@ -39,6 +39,12 @@ Compte demo local :
 
 Swagger est disponible sur `/documentation` quand le serveur tourne.
 
+## Fonctionnalites backend
+
+- Upload de pieces jointes sur les notes.
+- Export des notes en JSON, Markdown ou PDF.
+- Refresh token stocke hashe, Helmet, limitation des tentatives de connexion et logs d'audit.
+
 ## Reponses API
 
 Toutes les reponses suivent le format :

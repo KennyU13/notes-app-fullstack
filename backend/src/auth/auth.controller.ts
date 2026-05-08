@@ -1,5 +1,6 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 import { UtilisateurCourant, UtilisateurJwt } from '../commun/decorateurs/utilisateur-courant';
 import { JwtAuthGuard } from '../commun/gardes/jwt-auth.guard';
 import { AuthService } from './auth.service';
@@ -16,19 +17,23 @@ export class AuthController {
   }
 
   @Post('connexion')
-  connexion(@Body() dto: ConnexionDto) {
-    return this.auth.connexion(dto);
+  connexion(@Body() dto: ConnexionDto, @Req() requete: Request) {
+    return this.auth.connexion(dto, this.contexte(requete));
   }
 
   @Post('rafraichir-token')
-  rafraichirToken(@Body() dto: RafraichirTokenDto) {
-    return this.auth.rafraichirToken(dto.refreshToken);
+  rafraichirToken(@Body() dto: RafraichirTokenDto, @Req() requete: Request) {
+    return this.auth.rafraichirToken(dto.refreshToken, this.contexte(requete));
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('deconnexion')
-  deconnexion(@UtilisateurCourant() utilisateur: UtilisateurJwt) {
-    return this.auth.deconnexion(utilisateur.id);
+  deconnexion(@UtilisateurCourant() utilisateur: UtilisateurJwt, @Req() requete: Request) {
+    return this.auth.deconnexion(utilisateur.id, this.contexte(requete));
+  }
+
+  private contexte(requete: Request) {
+    return { ip: requete.ip, userAgent: requete.get('user-agent') };
   }
 }

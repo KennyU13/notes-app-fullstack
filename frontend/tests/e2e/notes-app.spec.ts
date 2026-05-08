@@ -31,6 +31,7 @@ test('parcours complet : inscription, categorie, note, edition, detail categorie
   await page.locator('select').selectOption({ label: categorie });
   await page.getByPlaceholder('Ajouter un tag').fill('e2e');
   await page.getByRole('button', { name: 'Ajouter' }).click();
+  await page.locator('input[type="file"]').setInputFiles('tests/fixtures/piece-jointe.txt');
   await page.getByRole('button', { name: 'Enregistrer' }).click();
 
   await expect(page.getByRole('heading', { name: 'Modifier la note' })).toBeVisible();
@@ -60,6 +61,11 @@ test('parcours complet : inscription, categorie, note, edition, detail categorie
   await page.getByRole('link', { name: 'Notes' }).click();
   await expect(page).toHaveURL(/\/notes$/);
   await expect(page.getByText(titreModifie)).toBeVisible();
+  await expect(page.getByText('1 piece(s)')).toBeVisible();
+
+  const telechargement = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'JSON' }).click();
+  expect((await telechargement).suggestedFilename()).toBe('notes.json');
 
   const reponseEpingle = page.waitForResponse((reponse) => reponse.url().includes('/epingler') && reponse.request().method() === 'PATCH');
   await page.getByRole('button', { name: 'Epingler' }).click();

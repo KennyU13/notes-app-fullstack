@@ -13,5 +13,12 @@ export const notesService = {
   supprimerDefinitivement: (id: string) => api.delete(`/notes/${id}/definitif`).then((r) => r.data.donnees),
   favori: (id: string) => api.patch(`/notes/${id}/favori`).then((r) => r.data.donnees as Note),
   archiver: (id: string) => api.patch(`/notes/${id}/archiver`).then((r) => r.data.donnees as Note),
-  epingler: (id: string) => api.patch(`/notes/${id}/epingler`).then((r) => r.data.donnees as Note)
+  epingler: (id: string) => api.patch(`/notes/${id}/epingler`).then((r) => r.data.donnees as Note),
+  ajouterPieceJointe: (id: string, fichier: File) => {
+    const donnees = new FormData();
+    donnees.append('fichier', fichier);
+    return api.post(`/notes/${id}/pieces-jointes`, donnees).then((r) => r.data.donnees);
+  },
+  supprimerPieceJointe: (id: string) => api.delete(`/notes/pieces-jointes/${id}`).then((r) => r.data.donnees),
+  exporter: (format: 'json' | 'markdown' | 'pdf') => api.get(`/notes/export/${format}`, { responseType: 'blob' })
 };

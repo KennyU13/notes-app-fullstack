@@ -35,6 +35,7 @@ export function NoteCard({
       <div className="mt-4 flex flex-wrap gap-2">
         {note.categorie && <CategoryBadge nom={note.categorie.nom} couleur={note.categorie.couleur} />}
         {note.tags?.slice(0, 3).map(({ tag }) => <TagChip key={tag.id} nom={tag.nom} />)}
+        {note.piecesJointes?.length ? <span className="rounded-full border border-white/20 px-3 py-1 text-xs">{note.piecesJointes.length} piece(s)</span> : null}
       </div>
       <div className="mt-5 flex items-center justify-between text-xs text-white/55">
         <span>{new Date(note.updatedAt).toLocaleDateString('fr-FR')}</span>

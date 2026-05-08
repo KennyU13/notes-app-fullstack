@@ -19,6 +19,7 @@ model Utilisateur {
   notes        Note[]
   categories   Categorie[]
   tags         Tag[]
+  auditLogs    AuditLog[]
 }
 
 model Note {
@@ -38,11 +39,41 @@ model Note {
   utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
   categorie     Categorie?  @relation(fields: [categorieId], references: [id], onDelete: SetNull)
   tags          NoteTag[]
+  piecesJointes PieceJointe[]
 
   @@index([utilisateurId])
   @@index([categorieId])
   @@index([estSupprimee])
   @@index([estEpinglee])
+}
+
+model PieceJointe {
+  id          String   @id @default(uuid())
+  nomOriginal String
+  nomFichier  String
+  typeMime    String
+  taille      Int
+  chemin      String
+  noteId      String
+  createdAt   DateTime @default(now())
+  note        Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@index([noteId])
+}
+
+model AuditLog {
+  id            String      @id @default(uuid())
+  action        String
+  utilisateurId String?
+  email         String?
+  ip            String?
+  userAgent     String?
+  succes        Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  utilisateur   Utilisateur? @relation(fields: [utilisateurId], references: [id], onDelete: SetNull)
+
+  @@index([utilisateurId])
+  @@index([action])
 }
 
 model Categorie {

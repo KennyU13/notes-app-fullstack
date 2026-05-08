@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { FiltreExceptions } from './commun/filtres/filtre-exceptions';
 import { IntercepteurReponse } from './commun/intercepteurs/intercepteur-reponse';
@@ -15,6 +16,7 @@ async function bootstrap() {
     origin: ['http://localhost:5173'],
     credentials: true
   });
+  app.use(helmet());
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
   app.useGlobalFilters(new FiltreExceptions());

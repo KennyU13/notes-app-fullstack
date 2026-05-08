@@ -18,7 +18,11 @@ export function NoteFormPage() {
     <div className="space-y-5">
       <h1 className="text-3xl font-bold">{id ? 'Modifier la note' : 'Nouvelle note'}</h1>
       <NoteEditor note={note} categories={categories} onEnregistrer={async (payload) => {
-        const enregistree = id ? await modifier(id, payload) : await creer(payload);
+        const { fichiers, ...donnees } = payload;
+        const enregistree = id ? await modifier(id, donnees) : await creer(donnees);
+        if (fichiers?.length) {
+          await Promise.all(fichiers.map((fichier) => notesService.ajouterPieceJointe(enregistree.id, fichier)));
+        }
         navigate(`/notes/${enregistree.id}`);
       }} />
     </div>

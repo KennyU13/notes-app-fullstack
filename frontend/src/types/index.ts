@@ -1,6 +1,7 @@
 export type Utilisateur = { id: string; email: string; prenom: string; nom: string };
 export type Categorie = { id: string; nom: string; couleur: string; icone: string; createdAt: string };
 export type Tag = { id: string; nom: string };
+export type PieceJointe = { id: string; nomOriginal: string; nomFichier: string; typeMime: string; taille: number; createdAt: string };
 export type Note = {
   id: string;
   titre: string;
@@ -14,6 +15,7 @@ export type Note = {
   categorieId?: string;
   categorie?: Categorie | null;
   tags: { tag: Tag }[];
+  piecesJointes?: PieceJointe[];
   createdAt: string;
   updatedAt: string;
 };

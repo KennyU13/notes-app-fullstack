@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   const prisma = {
+    auditLog: { create: jest.fn() },
     utilisateur: {
       findUnique: jest.fn(),
       findFirst: jest.fn(),
@@ -30,6 +31,7 @@ describe('AuthService', () => {
     prisma.utilisateur.findUnique.mockResolvedValue(null);
     prisma.utilisateur.create.mockImplementation(({ data }) => Promise.resolve({ id: 'u1', refreshToken: null, createdAt: new Date(), updatedAt: new Date(), ...data }));
     prisma.utilisateur.update.mockResolvedValue({});
+    prisma.auditLog.create.mockResolvedValue({});
     jwt.signAsync.mockResolvedValueOnce('access').mockResolvedValueOnce('refresh');
 
     await service.inscription({

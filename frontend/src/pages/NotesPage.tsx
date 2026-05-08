@@ -10,6 +10,7 @@ import { useNotesStore } from '../stores/notesStore';
 import { useTagsStore } from '../stores/tagsStore';
 import { useUiStore } from '../stores/uiStore';
 import { TriNotes, trierNotes } from '../utils/trierNotes';
+import { notesService } from '../services/notes';
 
 export function NotesPage({ favoris = false, archivees = false, corbeille = false }: { favoris?: boolean; archivees?: boolean; corbeille?: boolean }) {
   const navigate = useNavigate();
@@ -49,6 +50,17 @@ export function NotesPage({ favoris = false, archivees = false, corbeille = fals
 
   const titre = corbeille ? 'Corbeille' : favoris ? 'Notes favorites' : archivees ? 'Notes archivees' : 'Toutes les notes';
 
+  const exporter = async (format: 'json' | 'markdown' | 'pdf') => {
+    const reponse = await notesService.exporter(format);
+    const extension = format === 'markdown' ? 'md' : format;
+    const url = URL.createObjectURL(reponse.data);
+    const lien = document.createElement('a');
+    lien.href = url;
+    lien.download = `notes.${extension}`;
+    lien.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
@@ -70,6 +82,13 @@ export function NotesPage({ favoris = false, archivees = false, corbeille = fals
             <button title="Vue grille" onClick={() => definirVue('grille')} className={`rounded-xl p-2 ${vue === 'grille' ? 'bg-white/20' : ''}`}><IconLayoutGrid /></button>
             <button title="Vue liste" onClick={() => definirVue('liste')} className={`rounded-xl p-2 ${vue === 'liste' ? 'bg-white/20' : ''}`}><IconList /></button>
           </div>
+          {!corbeille && (
+            <div className="flex rounded-2xl bg-white/10 p-1 text-sm">
+              <button onClick={() => void exporter('json')} className="rounded-xl px-3 py-2 hover:bg-white/10">JSON</button>
+              <button onClick={() => void exporter('markdown')} className="rounded-xl px-3 py-2 hover:bg-white/10">MD</button>
+              <button onClick={() => void exporter('pdf')} className="rounded-xl px-3 py-2 hover:bg-white/10">PDF</button>
+            </div>
+          )}
         </div>
       </div>
 
