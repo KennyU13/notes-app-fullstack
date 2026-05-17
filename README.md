@@ -6,6 +6,10 @@ Application de gestion de notes personnelles en monorepo :
 - `frontend/` : React 18, Vite, TypeScript, Tailwind CSS, Zustand.
 - `docker-compose.yml` : environnement local complet.
 
+## Capture demo
+
+![Capture demo Notes App](docs/captures/demo-notes-app.svg)
+
 ## Demarrage rapide
 
 ```bash
