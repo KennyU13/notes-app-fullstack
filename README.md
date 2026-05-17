@@ -19,6 +19,46 @@ Compte demo cree en local :
 - Email : `demo@notes.local`
 - Mot de passe : `password123`
 
+## Donnees de test
+
+Profil utilisateur exemple :
+
+- Prenom : `Kenny`
+- Nom : `Testeur`
+- Email : `demo@notes.local`
+- Date de naissance : `1995-04-13`
+- Lieu de naissance : `Antananarivo`
+- Poste : `Developpeur backend`
+- CIN : `101011234567`
+- Accroche : `Developpeur backend rigoureux et oriente solution, je concois des API fiables, securisees et maintenables.`
+- Mes atouts : `Rigueur, autonomie, curiosite technique, resolution de probleme, qualite du code et esprit d'equipe.`
+
+Categories exemple :
+
+- `Travail` - couleur `#6366f1` - icone `Briefcase`
+- `Apprentissage` - couleur `#06b6d4` - icone `Book`
+- `Personnel` - couleur `#22c55e` - icone `Heart`
+
+Exemples de notes :
+
+1. `Preparation API Notes`
+   - Categorie : `Travail`
+   - Tags : `nestjs`, `prisma`, `api`
+   - Couleur : `#6366f1`
+   - Contenu : `Verifier les endpoints auth, notes, categories et tags. Controler les erreurs en francais et le format JSON standardise.`
+
+2. `Plan de revision TypeScript`
+   - Categorie : `Apprentissage`
+   - Tags : `typescript`, `react`, `tests`
+   - Couleur : `#06b6d4`
+   - Contenu : `Revoir les types generiques, les hooks React, Zustand, les DTOs et les tests Playwright pour consolider le projet.`
+
+3. `Idees personnelles`
+   - Categorie : `Personnel`
+   - Tags : `objectifs`, `organisation`
+   - Couleur : `#22c55e`
+   - Contenu : `Noter les objectifs de la semaine, classer les priorites et epingler les notes importantes pour les retrouver rapidement.`
+
 Services disponibles :
 
 - Frontend : http://localhost:5173
