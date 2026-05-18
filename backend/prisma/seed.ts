@@ -43,6 +43,17 @@ async function main() {
     }
   });
 
+  const apprentissage = await prisma.categorie.upsert({
+    where: { nom_utilisateurId: { nom: 'Apprentissage', utilisateurId: utilisateur.id } },
+    update: {},
+    create: {
+      nom: 'Apprentissage',
+      couleur: '#22c55e',
+      icone: 'Book',
+      utilisateurId: utilisateur.id
+    }
+  });
+
   const tagDemo = await prisma.tag.upsert({
     where: { nom_utilisateurId: { nom: 'demo', utilisateurId: utilisateur.id } },
     update: {},
@@ -69,9 +80,77 @@ async function main() {
     });
   }
 
-  await prisma.note.findFirst({
-    where: { utilisateurId: utilisateur.id, categorieId: personnel.id }
-  });
+  const notesProjet = [
+    {
+      titre: 'Finaliser la gestion des exceptions',
+      contenu: 'Verifier que les erreurs de connexion, inscription, validation et base de donnees retournent un format JSON clair avec message en francais.',
+      couleur: '#6366f1',
+      categorieId: travail.id,
+      tags: ['backend', 'exceptions', 'auth'],
+      estEpinglee: true
+    },
+    {
+      titre: 'Tester le parcours Playwright',
+      contenu: 'Executer le scenario complet : inscription, connexion, creation de categorie, note, edition, corbeille, profil et capture demo.',
+      couleur: '#06b6d4',
+      categorieId: apprentissage.id,
+      tags: ['tests', 'playwright', 'qualite'],
+      estEpinglee: true
+    },
+    {
+      titre: 'Organiser les ports Docker',
+      contenu: 'Garder Notes App sur le port 2000 pour eviter les conflits avec le portfolio et conserver le backend sur 3001.',
+      couleur: '#22c55e',
+      categorieId: travail.id,
+      tags: ['docker', 'configuration'],
+      estEpinglee: false
+    },
+    {
+      titre: 'Preparer les donnees de demonstration',
+      contenu: 'Ajouter un profil complet, des categories, des tags et plusieurs notes recentes afin de presenter le projet dans le README.',
+      couleur: '#f59e0b',
+      categorieId: personnel.id,
+      tags: ['demo', 'readme', 'presentation'],
+      estEpinglee: false
+    }
+  ];
+
+  for (const noteProjet of notesProjet) {
+    const existante = await prisma.note.findFirst({ where: { titre: noteProjet.titre, utilisateurId: utilisateur.id } });
+    const note = existante
+      ? await prisma.note.update({
+          where: { id: existante.id },
+          data: {
+            contenu: noteProjet.contenu,
+            couleur: noteProjet.couleur,
+            categorieId: noteProjet.categorieId,
+            estEpinglee: noteProjet.estEpinglee,
+            estSupprimee: false,
+            supprimeeAt: null,
+            updatedAt: new Date()
+          }
+        })
+      : await prisma.note.create({
+          data: {
+            titre: noteProjet.titre,
+            contenu: noteProjet.contenu,
+            couleur: noteProjet.couleur,
+            utilisateurId: utilisateur.id,
+            categorieId: noteProjet.categorieId,
+            estEpinglee: noteProjet.estEpinglee
+          }
+        });
+
+    await prisma.noteTag.deleteMany({ where: { noteId: note.id } });
+    for (const nom of noteProjet.tags) {
+      const tag = await prisma.tag.upsert({
+        where: { nom_utilisateurId: { nom, utilisateurId: utilisateur.id } },
+        update: {},
+        create: { nom, utilisateurId: utilisateur.id }
+      });
+      await prisma.noteTag.create({ data: { noteId: note.id, tagId: tag.id } });
+    }
+  }
 
   console.log('Seed termine : compte demo@notes.local pret.');
 }

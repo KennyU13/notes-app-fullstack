@@ -8,7 +8,7 @@ Application de gestion de notes personnelles en monorepo :
 
 ## Capture demo
 
-![Capture demo Notes App](docs/captures/demo-notes-app.svg)
+![Capture demo Notes App en theme clair](docs/captures/demo-notes-app-light-notes.png)
 
 ## Demarrage rapide
 
@@ -62,6 +62,32 @@ Exemples de notes :
    - Tags : `objectifs`, `organisation`
    - Couleur : `#22c55e`
    - Contenu : `Noter les objectifs de la semaine, classer les priorites et epingler les notes importantes pour les retrouver rapidement.`
+
+Notes projet recentes ajoutees au seed :
+
+1. `Finaliser la gestion des exceptions`
+   - Categorie : `Travail`
+   - Tags : `backend`, `exceptions`, `auth`
+   - Couleur : `#6366f1`
+   - Contenu : `Verifier que les erreurs de connexion, inscription, validation et base de donnees retournent un format JSON clair avec message en francais.`
+
+2. `Tester le parcours Playwright`
+   - Categorie : `Apprentissage`
+   - Tags : `tests`, `playwright`, `qualite`
+   - Couleur : `#06b6d4`
+   - Contenu : `Executer le scenario complet : inscription, connexion, creation de categorie, note, edition, corbeille, profil et capture demo.`
+
+3. `Organiser les ports Docker`
+   - Categorie : `Travail`
+   - Tags : `docker`, `configuration`
+   - Couleur : `#22c55e`
+   - Contenu : `Garder Notes App sur le port 2000 pour eviter les conflits avec le portfolio et conserver le backend sur 3001.`
+
+4. `Preparer les donnees de demonstration`
+   - Categorie : `Personnel`
+   - Tags : `demo`, `readme`, `presentation`
+   - Couleur : `#f59e0b`
+   - Contenu : `Ajouter un profil complet, des categories, des tags et plusieurs notes recentes afin de presenter le projet dans le README.`
 
 Services disponibles :
 
