@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3001'
 });
 
 api.interceptors.request.use((config) => {
@@ -26,7 +26,7 @@ api.interceptors.response.use(
       requete.headers.Authorization = `Bearer ${reponse.data.donnees.accessToken}`;
       return api(requete);
     }
-    const message = erreur.response?.data?.message ?? 'Une erreur est survenue';
+    const message = erreur.response?.data?.message ?? (erreur.request ? 'API inaccessible. Verifiez que le backend tourne sur http://localhost:3001.' : 'Une erreur est survenue');
     toast.error(message);
     return Promise.reject(erreur);
   }

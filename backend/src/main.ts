@@ -12,8 +12,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
+  const frontendUrl = config.get<string>('FRONTEND_URL');
+  const corsOrigins = ['http://localhost:2000', 'http://127.0.0.1:2000', 'http://localhost:5173', 'http://127.0.0.1:5173'];
+  if (frontendUrl && !corsOrigins.includes(frontendUrl)) corsOrigins.push(frontendUrl);
+
   app.enableCors({
-    origin: ['http://localhost:5173'],
+    origin: corsOrigins,
     credentials: true
   });
   app.use(helmet());

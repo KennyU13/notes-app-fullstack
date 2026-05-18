@@ -6,7 +6,7 @@ services:
       POSTGRES_PASSWORD: notes
       POSTGRES_DB: notes_app
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_notes:/var/lib/postgresql/data
     healthcheck:
@@ -26,24 +26,25 @@ services:
       JWT_REFRESH_EXPIRATION: 7d
       SEED_DEMO_DATA: "true"
       PORT: 3000
+      FRONTEND_URL: http://localhost:2000
     ports:
-      - "3000:3000"
+      - "3001:3000"
     volumes:
       - ./backend:/app
       - /app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "npx prisma generate && npm run db:setup && npm run start:dev"
+    command: sh -c "npx prisma generate && until npx prisma migrate deploy; do echo 'PostgreSQL indisponible, nouvelle tentative...'; sleep 2; done && npm run db:seed && npm run start:dev"
 
   frontend:
     build:
       context: ./frontend
       target: dev
     environment:
-      VITE_API_URL: http://localhost:3000
+      VITE_API_URL: http://localhost:3001
     ports:
-      - "5173:5173"
+      - "2000:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules

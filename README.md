@@ -65,10 +65,10 @@ Exemples de notes :
 
 Services disponibles :
 
-- Frontend : http://localhost:5173
-- Backend : http://localhost:3000
-- Swagger : http://localhost:3000/documentation
-- PostgreSQL : localhost:5432
+- Frontend : http://localhost:2000
+- Backend : http://localhost:3001
+- Swagger : http://localhost:3001/documentation
+- PostgreSQL : localhost:5433
 
 Fonctionnalites principales :
 
@@ -94,7 +94,7 @@ npm test
 npm run test:e2e
 ```
 
-Les tests end-to-end Playwright supposent que l'application Docker tourne sur `http://localhost:5173` et que l'API est disponible sur `http://localhost:3000`.
+Les tests end-to-end Playwright supposent que l'application Docker tourne sur `http://localhost:2000` et que l'API est disponible sur `http://localhost:3001`.
 
 ## Production
 

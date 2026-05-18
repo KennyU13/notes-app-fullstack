@@ -10,7 +10,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Le frontend tourne sur http://localhost:5173 et appelle l'API sur `VITE_API_URL`.
+Le frontend tourne sur http://localhost:2000 avec Docker, ou http://localhost:5173 en lancement Vite direct. Il appelle l'API sur `VITE_API_URL` (`http://localhost:3001` en local Docker).
 
 ## Fonctionnalites
 
