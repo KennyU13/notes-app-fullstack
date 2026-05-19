@@ -130,6 +130,29 @@ docker-compose -f docker-compose.prod.yml up -d --build
 
 Avant une vraie mise en production, remplacez `JWT_SECRET` et les identifiants PostgreSQL.
 
+## Deploiement Render
+
+Le depot contient un fichier `render.yaml` pour deployer l'application avec Render Blueprints :
+
+- `notes-app-db` : base PostgreSQL.
+- `notes-app-api` : backend NestJS avec Prisma.
+- `notes-app-frontend` : frontend React/Vite statique.
+
+Depuis Render :
+
+1. Creez un nouveau Blueprint.
+2. Connectez ce depot GitHub.
+3. Selectionnez `render.yaml`.
+4. Lancez la creation des services.
+
+URLs prevues :
+
+- Frontend : `https://notes-app-frontend.onrender.com`
+- API : `https://notes-app-api.onrender.com`
+- Swagger : `https://notes-app-api.onrender.com/documentation`
+
+Si Render vous demande de changer un nom de service deja pris, mettez aussi a jour `FRONTEND_URL` cote API et `VITE_API_URL` cote frontend.
+
 ## Reset BDD
 
 ```bash
