@@ -21,10 +21,10 @@ services:
       - key: JWT_REFRESH_EXPIRATION
         value: 7d
       - key: FRONTEND_URL
-        value: https://notes-app-frontend.onrender.com
+        value: https://notes-app-frontend-kennyu13.onrender.com
 
   - type: web
-    name: notes-app-frontend
+    name: notes-app-frontend-kennyu13
     runtime: static
     rootDir: frontend
     buildCommand: npm ci && npm run build
