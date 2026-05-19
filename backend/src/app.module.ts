@@ -6,6 +6,7 @@ import { NotesModule } from './notes/notes.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TagsModule } from './tags/tags.module';
 import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
     NotesModule,
     CategoriesModule,
     TagsModule
-  ]
+  ],
+  controllers: [HealthController]
 })
 export class AppModule {}
