@@ -31,7 +31,7 @@ services:
     staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
-        value: https://notes-app-api.onrender.com
+        value: https://notes-app-api-o6oe.onrender.com
     routes:
       - type: rewrite
         source: /*
